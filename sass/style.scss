@@ -169,12 +169,7 @@ ion-icon {
 }
 
 @keyframes spin {
-  0% { content: "HTML5"; }
-  14% { content: "CSS"; }
-  28% { content: "JavaScript"; }
-  43% { content: "Python"; }
-  58% { content: "Java"; }
-  72% { content: "C"; }
-  86% { content: "SQL"; }
-  100% { content: "Shell"; }
-}
+	0% { content: "writing code"; }
+	50% { content: "reading papers"; }
+	100% { content: "reading and writing poems :)"; }
+  }
