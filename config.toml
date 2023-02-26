@@ -70,7 +70,7 @@ pygmentsStyle = "monokai"
   accentColor = "#FF4D4D"
 
   # Keywords relevant for SEO
-  metaKeywords = ["machine learning", "deep learning", "research", "developer", "data science", "computer vision"]
+  metaKeywords = ["machine learning", "deep learning", "research", "developer", "data science", "computer vision", "pulkit", "pulkit mishra", "software", "software developer", "software development", "artificial intelligence", "ml", "dl", "ai", "image recognition", "pattern recognition", "image processing", "video analytics", "audio processing", "natural language processing", "nlp", "software engineering", "pytorch", "tensorflow", "keras", "opencv", "numpy", "pandas", "matplotlib", "linux", "bash", "shell scripting", "docker", "kubernetes", "research and development", "git", "flask", "django", "fastapi", "python", "continuous integration", "SQL" ,"artificial neural network", "convolutional neural networks", "cnn", "recurrent neural networks", "RNN", "REST", "api", "grpc"]
 
   # Footer text
   footer = "Pulkit Mishra"

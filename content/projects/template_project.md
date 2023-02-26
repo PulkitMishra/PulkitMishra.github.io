@@ -2,7 +2,7 @@
 title: "Template Project"
 image: "/images/templateproject.jpg"
 type: "page"
-draft: false
+draft: true
 ---
 
 

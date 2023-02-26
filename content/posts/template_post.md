@@ -5,7 +5,7 @@ description: "A template blog post"
 image: "/images/templatepost.jpg"
 type: "post"
 tags: ["template"]
-draft: false
+draft: true
 ---
 
 # Hello World!
