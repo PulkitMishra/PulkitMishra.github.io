@@ -45,14 +45,14 @@ pygmentsStyle = "monokai"
     weight = 3
     
   [[menu.main]]
-    identifier = "buymeacoffee"
+    identifier = "resume"
     name = "Resume"
     pre = "<span data-feather='download'></span>"
-    url = "/PulkitMishra_Resume.pdf"
+    url = "/pulkitmishra_resume.pdf"
     weight = 4
     
   [[menu.main]]
-    identifier = "resume"
+    identifier = "buymeacoffee"
     pre = "<span data-feather='coffee'></span>"
     url = "https://www.buymeacoffee.com/pulkitmishra"
     weight = 5
