@@ -8,7 +8,7 @@ I strongly believe in open source and have actively contributed to several proje
 
 I love hackathons and developing innovative solutions. I have had the honor of winning several hackathons, including the Smart India Hackathon, where I led a team in building solutions for the Government of Goa.
 
-You can find more details about my professional work experience from my [resume](https://pulkitmishra.github.io/pulkitmishra_resume.pdf), [LinkedIn](https://www.linkedin.com/in/pulkit-mishra/) and [AngelList](https://angel.co/u/pulkitmishra) profiles.
+You can find more details about my professional work experience from my [resume](https://pulkitmishra.github.io/PulkitMishra_Resume.pdf), [LinkedIn](https://www.linkedin.com/in/pulkit-mishra/) and [AngelList](https://angel.co/u/pulkitmishra) profiles.
 
 # About My Writings
 
