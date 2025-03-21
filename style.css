@@ -1,0 +1,1238 @@
+/* Base Theme Variables - Before Sunrise (Tech Morning) */
+.before-sunrise {
+  --background: #f0f4f8;
+  --text-color: #2d3748;
+  --heading-color: #1a202c;
+  --accent-color: #3182ce;
+  --accent-hover: #2c5282;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(0, 0, 0, 0.06);
+  --card-border: #e2e8f0;
+  --hero-bg-start: rgba(235, 244, 255, 0.8);
+  --hero-bg-end: rgba(240, 244, 248, 0.6);
+  --nav-bg: #edf2f7;
+  --nav-text: #2d3748;
+  --nav-hover: #3182ce;
+  --quote-bg: #edf2f7;
+  --section-line: #3182ce;
+  --tech-primary: #3182ce;
+  --tech-secondary: #4299e1;
+  --tech-tertiary: #63b3ed;
+  --tech-metallic: linear-gradient(135deg, #718096, #a0aec0, #e2e8f0, #a0aec0);
+  --gear-color: #4a5568;
+  --node-color: #4299e1;
+  --connection-color: #a0aec0;
+  --profile-gradient: linear-gradient(135deg, #3182ce, #4299e1);
+  --circuit-color: rgba(53, 128, 203, 0.1);
+}
+
+/* Before Sunset (Phoenix) */
+.before-sunset {
+  --background: #fff8f0;
+  --text-color: #5d4037;
+  --heading-color: #e65100;
+  --accent-color: #ff6f00;
+  --accent-hover: #f4511e;
+  --card-bg: #fffaf0;
+  --card-shadow: rgba(230, 81, 0, 0.1);
+  --card-border: #ffe0b2;
+  --hero-bg-start: rgba(255, 243, 224, 0.8);
+  --hero-bg-end: rgba(255, 248, 225, 0.9);
+  --nav-bg: #ffecb3;
+  --nav-text: #e65100;
+  --nav-hover: #ff6f00;
+  --quote-bg: #fff3e0;
+  --section-line: #ff6f00;
+  --phoenix-primary: #ff9800;
+  --phoenix-secondary: #f44336;
+  --phoenix-accent: #ffeb3b;
+  --flame-glow: rgba(255, 87, 34, 0.3);
+  --profile-gradient: linear-gradient(135deg, #FF9800, #F44336);
+}
+
+/* Before Midnight (Starry Night) */
+.before-midnight {
+  --background: #0d1b2a;
+  --text-color: #e0e7ff;
+  --heading-color: #90caf9;
+  --accent-color: #4fc3f7;
+  --accent-hover: #ffd54f;
+  --card-bg: #1a2639;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-border: #1e3a5f;
+  --hero-bg-start: rgba(13, 27, 42, 0.7);
+  --hero-bg-end: rgba(13, 27, 42, 0.9);
+  --nav-bg: #1e3a5f;
+  --nav-text: #e0e7ff;
+  --nav-hover: #ffd54f;
+  --quote-bg: #1a2639;
+  --section-line: #4fc3f7;
+  --star-color: #ffd54f;
+  --moon-color: #e0f7fa;
+  --swirl-color1: #304ffe;
+  --swirl-color2: #90caf9;
+  --profile-gradient: linear-gradient(135deg, #1a237e, #0d47a1);
+}
+
+/* Starry Night Background - Active only in Before Midnight theme */
+.before-midnight::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(1px 1px at 25% 15%, #ffd54f, transparent),
+    radial-gradient(1px 1px at 50% 40%, #4fc3f7, transparent),
+    radial-gradient(1.5px 1.5px at 75% 25%, #ffd54f, transparent),
+    radial-gradient(2px 2px at 20% 60%, #ffd54f, transparent),
+    radial-gradient(2.5px 2.5px at 90% 75%, #4fc3f7, transparent),
+    radial-gradient(2.5px 2.5px at 10% 85%, #ffd54f, transparent),
+    radial-gradient(1px 1px at 60% 95%, #4fc3f7, transparent),
+    radial-gradient(1.5px 1.5px at 70% 5%, #4fc3f7, transparent),
+    repeating-linear-gradient(45deg, #304ffe05 0px, #304ffe08 2px, transparent 2px, transparent 4px),
+    repeating-linear-gradient(-45deg, #ffd54f05 0px, #ffd54f08 2px, transparent 2px, transparent 4px);
+  z-index: -1;
+  opacity: 0.7;
+  background-size: 300px 300px, 200px 200px, 250px 250px, 300px 300px;
+  animation: drift 60s linear infinite;
+}
+
+/* Swirling background for Before Midnight theme */
+.before-midnight .hero::before,
+.before-midnight .project-card::before,
+.before-midnight .post::before,
+.before-midnight .footer-quote::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 20px, rgba(65, 105, 225, 0.03) 20px, rgba(65, 105, 225, 0.03) 25px),
+    repeating-radial-gradient(circle at 80% 80%, transparent 0, transparent 20px, rgba(255, 213, 79, 0.03) 20px, rgba(255, 213, 79, 0.03) 25px);
+  z-index: -1;
+  opacity: 0.5;
+  border-radius: inherit;
+}
+
+/* TechnoDharma Background Patterns */
+.before-sunrise::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(to right, transparent 49px, var(--circuit-color) 49px, var(--circuit-color) 50px, transparent 50px),
+    linear-gradient(to bottom, transparent 49px, var(--circuit-color) 49px, var(--circuit-color) 50px, transparent 50px),
+    radial-gradient(circle at 25% 30%, rgba(49, 130, 206, 0.03) 0%, transparent 20%),
+    radial-gradient(circle at 75% 60%, rgba(49, 130, 206, 0.03) 0%, transparent 20%);
+  background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%;
+  z-index: -1;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background);
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--heading-color);
+  transition: color 0.5s ease;
+}
+
+h1 {
+  font-size: 2.2rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-top: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
+h2::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 3rem;
+  height: 0.2rem;
+  background: var(--section-line);
+  transition: background 0.5s ease;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  transition: color 0.5s ease;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+section {
+  margin: 5rem 0;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+  background-color: var(--card-bg);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 5px 15px var(--card-shadow);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.theme-toggle button {
+  background-color: var(--nav-bg);
+  border: none;
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  border-radius: 0.3rem;
+  color: var(--nav-text);
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-icon {
+  font-size: 1.1rem;
+}
+
+.theme-toggle button:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.theme-toggle button.active {
+  background-color: var(--accent-color);
+  color: white;
+  box-shadow: 0 2px 5px var(--card-shadow);
+}
+
+/* Logo Styles */
+.logo-container {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-right: 1rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hide all logos by default */
+.sunrise-logo, .sunset-logo, .midnight-logo {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Display the right logo based on theme */
+.before-sunrise .sunrise-logo {
+  display: block;
+}
+
+.before-sunset .sunset-logo {
+  display: block;
+}
+
+.before-midnight .midnight-logo {
+  display: block;
+}
+
+/* Sunrise Tech Logo - Moving Gears and Neural Network */
+.tech-gears {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--tech-metallic);
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), inset 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.gear {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--gear-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gear::before {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background-color: var(--tech-primary);
+  border-radius: 50%;
+}
+
+.gear::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-conic-gradient(
+    from 0deg,
+    var(--gear-color) 0deg 15deg,
+    transparent 15deg 30deg
+  );
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.gear-large {
+  width: 60%;
+  height: 60%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: rotate 20s linear infinite;
+}
+
+.gear-medium {
+  width: 35%;
+  height: 35%;
+  top: 20%;
+  right: 15%;
+  animation: rotate-reverse 15s linear infinite;
+}
+
+.gear-small {
+  width: 25%;
+  height: 25%;
+  bottom: 15%;
+  left: 20%;
+  animation: rotate 10s linear infinite;
+}
+
+.neural-network {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+  z-index: 2;
+  opacity: 0.8;
+}
+
+.node {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--node-color);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--node-color);
+}
+
+.n1 { top: 25%; left: 25%; animation: pulse 3s infinite; }
+.n2 { top: 25%; right: 25%; animation: pulse 3s infinite 0.5s; }
+.n3 { top: 50%; left: 15%; animation: pulse 3s infinite 1s; }
+.n4 { top: 50%; right: 15%; animation: pulse 3s infinite 1.5s; }
+.n5 { bottom: 25%; left: 25%; animation: pulse 3s infinite 2s; }
+.n6 { bottom: 25%; right: 25%; animation: pulse 3s infinite 2.5s; }
+
+.neural-network::before, .neural-network::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(to bottom right, transparent 49%, var(--connection-color) 49%, var(--connection-color) 51%, transparent 51%),
+    linear-gradient(to bottom left, transparent 49%, var(--connection-color) 49%, var(--connection-color) 51%, transparent 51%),
+    linear-gradient(to top right, transparent 49%, var(--connection-color) 49%, var(--connection-color) 51%, transparent 51%),
+    linear-gradient(to top left, transparent 49%, var(--connection-color) 49%, var(--connection-color) 51%, transparent 51%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Phoenix Symbol */
+.phoenix-symbol {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.phoenix-wings {
+  position: absolute;
+  width: 100%;
+  height: 70%;
+  top: 15%;
+  left: 0;
+  background: 
+    radial-gradient(ellipse at 50% 50%, var(--phoenix-primary) 20%, transparent 70%);
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 80% 80%, 50% 60%, 20% 80%);
+  animation: wings-flap 5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 10px var(--flame-glow));
+}
+
+.phoenix-tail {
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  width: 50%;
+  height: 40%;
+  background: linear-gradient(to bottom, var(--phoenix-primary), var(--phoenix-secondary));
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  transform-origin: top center;
+  animation: tail-wave 6s ease-in-out infinite alternate;
+}
+
+.phoenix-head {
+  position: absolute;
+  top: 15%;
+  left: 35%;
+  width: 30%;
+  height: 20%;
+  background-color: var(--phoenix-secondary);
+  border-radius: 50% 50% 30% 30%;
+  z-index: 2;
+}
+
+.phoenix-flames {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  right: -10%;
+  bottom: -10%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(circle at 50% 0%, var(--phoenix-accent), transparent 70%),
+    radial-gradient(circle at 50% 100%, var(--phoenix-secondary), transparent 70%);
+  filter: blur(5px);
+  opacity: 0.5;
+  z-index: -1;
+  animation: flames 3s ease-in-out infinite alternate;
+}
+
+/* Midnight (Starry Night) Moon Logo */
+.moon {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+  background-color: var(--moon-color);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(224, 247, 250, 0.6);
+}
+
+.moon-crater {
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  top: 20%;
+  left: 55%;
+  background-color: rgba(176, 190, 197, 0.3);
+  border-radius: 50%;
+}
+
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.star {
+  position: absolute;
+  background-color: var(--star-color);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.star-1 {
+  width: 20%;
+  height: 20%;
+  top: 10%;
+  left: 80%;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.star-2 {
+  width: 15%;
+  height: 15%;
+  top: 80%;
+  left: 20%;
+  animation: twinkle 4s ease-in-out infinite 0.5s;
+}
+
+.star-3 {
+  width: 10%;
+  height: 10%;
+  top: 40%;
+  left: 10%;
+  animation: twinkle 3.5s ease-in-out infinite 1s;
+}
+
+/* Site Title */
+.before-sunrise .site-title {
+  position: relative;
+  background: var(--tech-metallic);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.01em;
+}
+
+.before-sunrise .site-title::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: linear-gradient(90deg, var(--tech-primary), transparent);
+}
+
+.before-sunset .site-title {
+  background: linear-gradient(45deg, var(--phoenix-primary), var(--phoenix-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 5px rgba(230, 81, 0, 0.2);
+}
+
+.before-midnight .site-title {
+  margin-left: 0;
+  color: var(--moon-color);
+  text-shadow: 0 0 10px rgba(77, 208, 225, 0.5);
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation */
+.main-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.3rem;
+  color: var(--nav-text);
+  background-color: var(--nav-bg);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: var(--accent-hover);
+  opacity: 0.2;
+  transition: height 0.3s ease;
+  z-index: -1;
+}
+
+.nav-link:hover {
+  color: var(--nav-hover);
+}
+
+.nav-link:hover::after {
+  height: 100%;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 5rem 0;
+  position: relative;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, var(--hero-bg-start), var(--hero-bg-end));
+  transition: background 0.5s ease;
+  overflow: hidden;
+}
+
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  color: var(--heading-color);
+  font-family: 'Crimson Pro', serif;
+  transition: color 0.5s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  font-family: 'Crimson Pro', serif;
+  max-width: 40rem;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sunrise (Tech) hero enhancements */
+.before-sunrise .hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 20px, var(--circuit-color) 20px, var(--circuit-color) 21px),
+    repeating-linear-gradient(-45deg, transparent, transparent 20px, var(--circuit-color) 20px, var(--circuit-color) 21px),
+    radial-gradient(circle at 70% 30%, rgba(66, 153, 225, 0.1), transparent 50%),
+    radial-gradient(circle at 30% 70%, rgba(49, 130, 206, 0.1), transparent 50%);
+  z-index: 0;
+}
+
+.before-sunrise .hero-title {
+  background: var(--tech-metallic);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Sunset (Phoenix) hero enhancements */
+.before-sunset .hero {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 235, 59, 0.05));
+}
+
+.before-sunset .hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 111, 0, 0.1), transparent 70%);
+  z-index: 0;
+}
+
+.before-sunset .hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: -50px;
+  right: -50px;
+  height: 100px;
+  background: linear-gradient(180deg, transparent, rgba(255, 111, 0, 0.05));
+  transform: skewY(-2deg);
+}
+
+/* About Section */
+.about-content {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 3rem;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background-color: var(--card-bg);
+  box-shadow: 0 5px 20px var(--card-shadow);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-text p {
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.about-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-circle {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background-image: url('assets/avatar.png');
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 10px 25px var(--card-shadow);
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.links-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.profile-link {
+  padding: 0.5rem 1rem;
+  border-radius: 0.3rem;
+  background-color: var(--nav-bg);
+  color: var(--nav-text);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-align: center;
+  flex: 1;
+  min-width: 80px;
+}
+
+.profile-link:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--card-shadow);
+}
+
+/* Sunrise (Tech) profile enhancements */
+.before-sunrise .profile-circle {
+  position: relative;
+}
+
+.before-sunrise .profile-circle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.05) 10px, rgba(255, 255, 255, 0.05) 12px),
+    repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.05) 10px, rgba(255, 255, 255, 0.05) 12px);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+/* Sunset (Phoenix) profile enhancements */
+.before-sunset .profile-circle {
+  box-shadow: 0 10px 25px rgba(244, 67, 54, 0.2);
+}
+
+.before-sunset .profile-circle::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 193, 7, 0.2), rgba(255, 87, 34, 0.2));
+  border-radius: 50%;
+  z-index: -1;
+  animation: pulse 4s infinite alternate;
+}
+
+/* Midnight (Starry Night) profile enhancements */
+.before-midnight .profile-circle {
+  box-shadow: 0 0 30px rgba(25, 118, 210, 0.4);
+}
+
+.before-midnight .profile-circle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 50% 50%, rgba(79, 195, 247, 0.2), transparent 70%);
+  border-radius: 50%;
+}
+
+/* Projects Section */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.project-card {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 15px var(--card-shadow);
+  transition: all 0.3s ease, background-color 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.project-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.3rem;
+  background: var(--accent-color);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease, background 0.5s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px var(--card-shadow);
+}
+
+.project-card:hover::after {
+  transform: scaleX(1);
+}
+
+.project-card h3 {
+  margin-bottom: 1rem;
+}
+
+.project-card p {
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.project-card a {
+  align-self: flex-start;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.project-card a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-hover);
+  transition: width 0.3s ease, background-color 0.5s ease;
+}
+
+.project-card a:hover::after {
+  width: 100%;
+}
+
+/* Writing Section with Tabs */
+.writing-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--card-border);
+  transition: border-color 0.5s ease;
+}
+
+.tab, .tab-active {
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+  font-weight: 500;
+  background: none;
+  border: none;
+  color: var(--text-color);
+}
+
+.tab:hover {
+  color: var(--accent-color);
+}
+
+.tab-active {
+  color: var(--heading-color);
+  border-bottom-color: var(--accent-color);
+  transition: color 0.5s ease, border-bottom-color 0.5s ease;
+}
+
+.writing-content {
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  display: none;
+  opacity: 0;
+}
+
+.post {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--card-bg);
+  box-shadow: 0 3px 10px var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.post:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px var(--card-shadow);
+}
+
+.post-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  transition: color 0.5s ease;
+}
+
+.section-link {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.section-link a {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background-color: transparent;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 0.3rem;
+  font-weight: 600;
+  transition: all 0.2s ease, border-color 0.5s ease;
+}
+
+.section-link a:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--card-shadow);
+}
+
+/* Footer */
+footer {
+  margin-top: 6rem;
+  padding: 3rem 0;
+  border-top: 1px solid var(--card-border);
+  text-align: center;
+  transition: border-color 0.5s ease;
+}
+
+.quote-container {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto 2rem;
+}
+
+.footer-quote {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  color: var(--text-color);
+  line-height: 1.8;
+  position: relative;
+  padding: 2rem;
+  background-color: var(--quote-bg);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.5s ease;
+  opacity: 1;
+  min-height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px var(--card-shadow);
+}
+
+.quote-button {
+  position: absolute;
+  right: 1rem;
+  bottom: -1.5rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px var(--card-shadow);
+}
+
+.quote-button:hover {
+  background-color: var(--accent-hover);
+  transform: rotate(30deg);
+}
+
+/* Sunrise (Tech) quote styling */
+.before-sunrise .footer-quote {
+  background-color: rgba(237, 242, 247, 0.9);
+  border-left: 4px solid var(--tech-primary);
+  position: relative;
+  box-shadow: 0 4px 6px rgba(49, 130, 206, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.before-sunrise .footer-quote::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(49, 130, 206, 0.05) 10px, rgba(49, 130, 206, 0.05) 20px);
+  border-top-right-radius: 0.5rem;
+}
+
+/* Sunset (Phoenix) quote styling */
+.before-sunset .footer-quote {
+  background: linear-gradient(to right, rgba(255, 243, 224, 0.9), rgba(255, 236, 179, 0.9));
+  box-shadow: 0 5px 15px rgba(255, 111, 0, 0.1);
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.before-sunset .footer-quote::before {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(circle at center, var(--phoenix-primary) 0%, transparent 70%);
+  opacity: 0.3;
+  border-radius: 50%;
+  animation: pulse 5s infinite alternate;
+}
+
+/* Midnight (Starry Night) quote styling */
+.before-midnight .footer-quote {
+  background-color: rgba(26, 38, 57, 0.8);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+}
+
+.footer-credit {
+  color: var(--text-color);
+  opacity: 0.7;
+  font-size: 0.9rem;
+  transition: color 0.5s ease;
+}
+
+/* Animations */
+@keyframes rotate {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes rotate-reverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes drift {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+@keyframes wings-flap {
+  0% { transform: scaleX(1); }
+  50% { transform: scaleX(0.9); }
+  100% { transform: scaleX(1.1); }
+}
+
+@keyframes tail-wave {
+  0% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
+}
+
+@keyframes flames {
+  0% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+  100% { opacity: 0.4; transform: scale(1); }
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .about-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-image {
+    order: -1;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .links-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .profile-link {
+    flex: 0 0 calc(50% - 0.4rem);
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .main-nav {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    justify-content: flex-start;
+  }
+  
+  .hero {
+    padding: 3rem 1rem;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .theme-toggle {
+    flex-direction: row;
+    bottom: 1rem;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0 1rem;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  h2 {
+    font-size: 1.6rem;
+  }
+  
+  .profile-circle {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .theme-toggle {
+    padding: 0.3rem;
+  }
+  
+  .theme-toggle button {
+    padding: 0.4rem 0.6rem;
+    width: auto;
+    font-size: 0.75rem;
+  }
+  
+  .nav-link {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .writing-tabs {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .tab, .tab-active {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
