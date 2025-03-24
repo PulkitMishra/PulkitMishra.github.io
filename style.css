@@ -563,15 +563,15 @@ section {
 }
 
 #before-sunrise-toggle::after {
-  content: "Tech Acceleration & Digital Dharma";
+  content: "Technodharma";
 }
 
 #before-sunset-toggle::after {
-  content: "Phoenix Rising & Rebirth";
+  content: "Phoenix Rising";
 }
 
 #before-midnight-toggle::after {
-  content: "Van Gogh's Starry Night";
+  content: "Starry Night";
 }
 
 /* Logo Styles */
