@@ -1,4 +1,51 @@
-/* Base Theme Variables - Before Sunrise (Tech Morning) */
+/* Fix view project link in Before Sunrise */
+.before-sunrise .project-card a {
+  align-self: flex-start;
+  padding: 0.5rem 0;
+  position: relative;
+  color: var(--accent-color);
+  transition: color 0.3s ease;
+}
+
+.before-sunrise .project-card a:hover {
+  color: #38bdf8; /* Brighter blue that matches the theme */
+}
+
+.before-sunrise .project-card a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #38bdf8;
+  transition: width 0.3s ease;
+}
+
+.before-sunrise .project-card a:hover::after {
+  width: 100%;
+}
+
+/* Remove additional underline effects */
+.before-sunrise .project-card a::before {
+  display: none;
+}/* Change hover color for blog titles in Before Sunrise theme */
+.before-sunrise .post h3 a {
+  color: var(--accent-color);
+  transition: color 0.3s ease;
+}
+
+.before-sunrise .post h3 a:hover {
+  color: #38bdf8; /* Brighter blue that matches the theme */
+}/* Change hover color for blog titles in Before Sunrise theme */
+.before-sunrise .post h3 a {
+  color: var(--accent-color);
+  transition: color 0.3s ease;
+}
+
+.before-sunrise .post h3 a:hover {
+  color: #38bdf8; /* Brighter blue that matches the theme */
+}/* Base Theme Variables - Before Sunrise (Tech Morning) */
 .before-sunrise {
   /* Morning color palette */
   --background: #f0f7ff;
@@ -33,6 +80,13 @@
   /* Profile and gradients */
   --profile-gradient: linear-gradient(135deg, #0ea5e9, #0284c7);
   --tech-metallic: linear-gradient(135deg, #0f172a, #334155, #64748b, #334155);
+  
+  /* Enhanced circuit elements */
+  --circuit-line: rgba(14, 165, 233, 0.4);
+  --circuit-node: rgba(14, 165, 233, 0.6);
+  --silicon-grid: rgba(14, 165, 233, 0.15);
+  --data-flow: rgba(79, 209, 197, 0.5);
+  --spark-color: rgba(56, 189, 248, 0.7);
 }
 
 /* Before Sunset (Phoenix) */
@@ -57,6 +111,15 @@
   --phoenix-accent: #ffeb3b;
   --flame-glow: rgba(255, 87, 34, 0.3);
   --profile-gradient: linear-gradient(135deg, #FF9800, #F44336);
+  
+  /* Enhanced phoenix elements */
+  --ember-color: rgba(255, 152, 0, 0.7);
+  --ash-color: rgba(255, 255, 255, 0.4);
+  --deep-orange: #bf360c;
+  --phoenix-wing: #ff5722;
+  --phoenix-body: #e64a19;
+  --phoenix-tail: linear-gradient(to bottom, #ff9800, #f44336);
+  --flame-trail: rgba(255, 87, 34, 0.4);
 }
 
 /* Before Midnight (Starry Night) */
@@ -81,9 +144,18 @@
   --swirl-color1: #304ffe;
   --swirl-color2: #90caf9;
   --profile-gradient: linear-gradient(135deg, #1a237e, #0d47a1);
+  
+  /* Enhanced starry night elements */
+  --vangogh-blue: #1a237e;
+  --vangogh-deep-blue: #0d1b2a;
+  --vangogh-yellow: #ffeb3b;
+  --vangogh-moon-glow: rgba(255, 235, 59, 0.3);
+  --vangogh-swirl: rgba(65, 105, 225, 0.4);
+  --vangogh-cypress: #263238;
+  --brush-stroke: rgba(144, 202, 249, 0.15);
 }
 
-/* Tech Grid Background Pattern */
+/* Tech Grid Background Pattern - ENHANCED */
 .before-sunrise::before {
   content: '';
   position: fixed;
@@ -92,15 +164,144 @@
   width: 100%;
   height: 100%;
   background-image: 
-    linear-gradient(to right, transparent 49px, var(--grid-color) 49px, var(--grid-color) 50px, transparent 50px),
-    linear-gradient(to bottom, transparent 49px, var(--grid-color) 49px, var(--grid-color) 50px, transparent 50px),
-    radial-gradient(circle at 75% 25%, rgba(56, 189, 248, 0.05) 0%, transparent 25%),
-    radial-gradient(circle at 25% 75%, rgba(14, 165, 233, 0.05) 0%, transparent 25%);
-  background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%;
+    /* Silicon chip grid structure only */
+    linear-gradient(to right, transparent 49px, var(--silicon-grid) 49px, var(--silicon-grid) 50px, transparent 50px),
+    linear-gradient(to bottom, transparent 49px, var(--silicon-grid) 49px, var(--silicon-grid) 50px, transparent 50px),
+    /* Circuit nodes */
+    radial-gradient(circle at 25% 25%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    radial-gradient(circle at 75% 25%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    radial-gradient(circle at 25% 75%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    /* Circuit lines */
+    linear-gradient(90deg, transparent 45%, var(--circuit-line) 45%, var(--circuit-line) 55%, transparent 55%),
+    linear-gradient(180deg, transparent 45%, var(--circuit-line) 45%, var(--circuit-line) 55%, transparent 55%);
+  background-size: 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px;
+  z-index: -1;
+  animation: circuitPulse 10s infinite alternate;
+}
+
+/* Circuit pulse animation */
+@keyframes circuitPulse {
+  0%, 100% { opacity: 0.5; box-shadow: none; }
+  50% { opacity: 0.7; box-shadow: 0 0 5px 2px var(--data-flow); }
+}
+
+/* Circuit node pulse */
+.circuit-node {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: var(--circuit-node);
+  border-radius: 50%;
+  z-index: -1;
+  animation: nodePulse 8s infinite alternate;
+}
+
+@keyframes nodePulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; box-shadow: none; }
+  50% { transform: scale(1.5); opacity: 0.7; box-shadow: 0 0 8px 2px var(--data-flow); }
+}
+
+/* Data flow animation - appears occasionally on the grid */
+.data-flow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   z-index: -1;
 }
 
-/* Starry Night Background - Active only in Before Midnight theme */
+.data-pulse {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--data-flow);
+  border-radius: 50%;
+  opacity: 0;
+  z-index: -1;
+  animation: dataPulse 8s linear infinite;
+}
+
+@keyframes dataPulse {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.7; }
+  100% { transform: translate(200px, 200px); opacity: 0; }
+}
+
+/* Sunset Background - ENHANCED */
+.before-sunset::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    /* Deeper orange gradient */
+    linear-gradient(135deg, var(--deep-orange) 0%, rgba(255, 143, 0, 0.3) 50%, rgba(255, 235, 59, 0.1) 100%),
+    /* Wing-shaped patterns */
+    radial-gradient(ellipse at 20% 40%, transparent 50%, rgba(255, 87, 34, 0.05) 50%),
+    radial-gradient(ellipse at 80% 40%, transparent 50%, rgba(255, 87, 34, 0.05) 50%);
+  z-index: -1;
+  opacity: 0.4;
+}
+
+/* Ember and ash particles container */
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Ash particle animation - only goes up */
+.ash-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: var(--ash-color);
+  border-radius: 50%;
+  bottom: -10px;
+  opacity: 0;
+  animation: floatUp 15s ease-out infinite;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.7; }
+  70% { opacity: 0.5; transform: translateY(-80vh) rotate(360deg); }
+  100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Ember effect animation - only goes up */
+.ember-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: var(--ember-color);
+  border-radius: 50%;
+  bottom: -10px;
+  opacity: 0;
+  box-shadow: 0 0 10px 2px rgba(255, 152, 0, 0.3);
+  animation: emberGlow 8s ease-out infinite;
+}
+
+@keyframes emberGlow {
+  0% { transform: translateY(0) translateX(0); opacity: 0; scale: 1; }
+  10% { opacity: 0.8; }
+  50% { transform: translateY(-40vh) translateX(15px); scale: 1.5; opacity: 0.6; }
+  90% { opacity: 0.2; transform: translateY(-80vh) translateX(25px); scale: 1; }
+  100% { transform: translateY(-100vh) translateX(30px); opacity: 0; scale: 0.5; }
+}
+
+/* Starry Night Background - ENHANCED for Before Midnight theme */
 .before-midnight::before {
   content: '';
   position: fixed;
@@ -109,39 +310,36 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(1px 1px at 25% 15%, #ffd54f, transparent),
-    radial-gradient(1px 1px at 50% 40%, #4fc3f7, transparent),
-    radial-gradient(1.5px 1.5px at 75% 25%, #ffd54f, transparent),
-    radial-gradient(2px 2px at 20% 60%, #ffd54f, transparent),
-    radial-gradient(2.5px 2.5px at 90% 75%, #4fc3f7, transparent),
-    radial-gradient(2.5px 2.5px at 10% 85%, #ffd54f, transparent),
-    radial-gradient(1px 1px at 60% 95%, #4fc3f7, transparent),
-    radial-gradient(1.5px 1.5px at 70% 5%, #4fc3f7, transparent),
-    repeating-linear-gradient(45deg, #304ffe05 0px, #304ffe08 2px, transparent 2px, transparent 4px),
-    repeating-linear-gradient(-45deg, #ffd54f05 0px, #ffd54f08 2px, transparent 2px, transparent 4px);
+    /* Enhanced starry elements */
+    radial-gradient(1.5px 1.5px at 25% 15%, var(--vangogh-yellow), transparent),
+    radial-gradient(2px 2px at 50% 40%, var(--accent-color), transparent),
+    radial-gradient(2.5px 2.5px at 75% 25%, var(--vangogh-yellow), transparent),
+    radial-gradient(3px 3px at 20% 60%, var(--vangogh-yellow), transparent),
+    radial-gradient(3.5px 3.5px at 90% 75%, var(--accent-color), transparent),
+    radial-gradient(3px 3px at 10% 85%, var(--vangogh-yellow), transparent),
+    radial-gradient(2px 2px at 60% 95%, var(--accent-color), transparent),
+    radial-gradient(2.5px 2.5px at 70% 5%, var(--accent-color), transparent),
+    /* Van Gogh swirls - using SVG for better swirls */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800' viewBox='0 0 800 800' opacity='0.3'%3E%3Cpath d='M200,400 C250,350 300,450 350,400 C400,350 450,450 500,400 C550,350 600,450 650,400' stroke='%231a237e' stroke-width='50' fill='none' opacity='0.2'/%3E%3Cpath d='M100,200 C200,150 300,250 400,200 C500,150 600,250 700,200' stroke='%231a237e' stroke-width='60' fill='none' opacity='0.2'/%3E%3Cpath d='M100,600 C200,650 300,550 400,600 C500,650 600,550 700,600' stroke='%231a237e' stroke-width='60' fill='none' opacity='0.2'/%3E%3Cpath d='M150,100 C200,200 250,100 300,200 C350,300 400,200 450,300 C500,400 550,300 600,400 C650,500 700,400 750,500' stroke='%231a237e' stroke-width='40' fill='none' opacity='0.2'/%3E%3Cpath d='M50,700 C100,600 150,700 200,600 C250,500 300,600 350,500 C400,400 450,500 500,400 C550,300 600,400 650,300' stroke='%231a237e' stroke-width='40' fill='none' opacity='0.2'/%3E%3C/svg%3E"),
+    /* Add more subtle texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500' viewBox='0 0 500 500' opacity='0.05'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeBlend mode='screen'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E"),
+    /* Base gradient */
+    linear-gradient(to bottom, var(--vangogh-deep-blue), #0d1b2a);
+  background-size: 300px 300px, 200px 200px, 250px 250px, 300px 300px, 200px 200px, 250px 250px, 300px 300px, 200px 200px, 100% 100%, 150px 150px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, center center, 0 0, 0 0;
   z-index: -1;
-  opacity: 0.7;
-  background-size: 300px 300px, 200px 200px, 250px 250px, 300px 300px;
-  animation: drift 60s linear infinite;
+  opacity: 1;
+  animation: slowSwirl 180s linear infinite;
 }
 
-/* Swirling background for Before Midnight theme */
-.before-midnight .hero::before,
-.before-midnight .project-card::before,
-.before-midnight .post::before,
-.before-midnight .footer-quote::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 20px, rgba(65, 105, 225, 0.03) 20px, rgba(65, 105, 225, 0.03) 25px),
-    repeating-radial-gradient(circle at 80% 80%, transparent 0, transparent 20px, rgba(255, 213, 79, 0.03) 20px, rgba(255, 213, 79, 0.03) 25px);
-  z-index: -1;
-  opacity: 0.5;
-  border-radius: inherit;
+/* No village silhouette (removed as requested) */
+.before-midnight::after {
+  content: none;
+}
+
+@keyframes slowSwirl {
+  0% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, center center, 0% 0%, 0% 0%; }
+  100% { background-position: 100% 100%, 50% 50%, 30% 70%, 70% 30%, 20% 80%, 80% 20%, 40% 60%, 60% 40%, center center, 100% 100%, 0% 0%; }
 }
 
 /* Base Styles */
@@ -213,10 +411,72 @@ a {
   text-decoration: none;
   transition: all 0.2s ease;
   font-weight: 500;
+  position: relative;
 }
 
 a:hover {
   color: var(--accent-hover);
+}
+
+/* Theme-specific hover effects */
+.before-sunrise a::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-color), var(--data-flow));
+  transition: width 0.3s ease;
+  opacity: 0;
+}
+
+.before-sunrise a:hover::before {
+  width: 100%;
+  opacity: 1;
+}
+
+.before-sunset a::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--ember-color), transparent);
+  opacity: 0;
+  filter: blur(1px);
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.before-sunset a:hover::before {
+  opacity: 1;
+  filter: blur(1.5px);
+  transform: scaleX(1);
+}
+
+.before-midnight a {
+  display: inline-block;
+}
+
+.before-midnight a::before {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--vangogh-yellow), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: scale(0.5);
+}
+
+.before-midnight a:hover::before {
+  opacity: 0.7;
+  transform: scale(1);
 }
 
 button {
@@ -228,7 +488,7 @@ section {
   margin: 5rem 0;
 }
 
-/* Theme Toggle */
+/* Theme Toggle - ENHANCED */
 .theme-toggle {
   position: fixed;
   top: 1rem;
@@ -258,6 +518,8 @@ section {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .toggle-icon {
@@ -274,6 +536,42 @@ section {
   background-color: var(--accent-color);
   color: white;
   box-shadow: 0 2px 5px var(--card-shadow);
+}
+
+/* Theme hover descriptions */
+.theme-toggle button::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-color);
+  color: white;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  padding: 0 0.5rem;
+  text-align: center;
+}
+
+.theme-toggle button:hover::after {
+  opacity: 1;
+}
+
+#before-sunrise-toggle::after {
+  content: "Tech Acceleration & Digital Dharma";
+}
+
+#before-sunset-toggle::after {
+  content: "Phoenix Rising & Rebirth";
+}
+
+#before-midnight-toggle::after {
+  content: "Van Gogh's Starry Night";
 }
 
 /* Logo Styles */
@@ -443,7 +741,7 @@ section {
   animation: pulse-connection 3s infinite alternate;
 }
 
-/* Phoenix Symbol */
+/* ENHANCED Phoenix Logo */
 .phoenix-symbol {
   width: 100%;
   height: 100%;
@@ -452,23 +750,24 @@ section {
 
 .phoenix-wings {
   position: absolute;
-  width: 100%;
-  height: 70%;
-  top: 15%;
-  left: 0;
+  width: 160%;
+  height: 60%;
+  top: 20%;
+  left: -30%;
   background: 
-    radial-gradient(ellipse at 50% 50%, var(--phoenix-primary) 20%, transparent 70%);
-  clip-path: polygon(0 50%, 50% 0, 100% 50%, 80% 80%, 50% 60%, 20% 80%);
+    radial-gradient(ellipse at 50% 50%, var(--phoenix-wing) 20%, transparent 70%);
+  clip-path: polygon(50% 0, 90% 50%, 70% 90%, 50% 70%, 30% 90%, 10% 50%);
   animation: wings-flap 5s ease-in-out infinite alternate;
   filter: drop-shadow(0 0 10px var(--flame-glow));
+  transform-origin: center;
 }
 
 .phoenix-tail {
   position: absolute;
-  bottom: 0;
-  left: 25%;
-  width: 50%;
-  height: 40%;
+  bottom: -5%;
+  left: 35%;
+  width: 30%;
+  height: 50%;
   background: linear-gradient(to bottom, var(--phoenix-primary), var(--phoenix-secondary));
   clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
   transform-origin: top center;
@@ -477,13 +776,26 @@ section {
 
 .phoenix-head {
   position: absolute;
-  top: 15%;
-  left: 35%;
-  width: 30%;
-  height: 20%;
+  top: 20%;
+  left: 40%;
+  width: 20%;
+  height: 15%;
   background-color: var(--phoenix-secondary);
-  border-radius: 50% 50% 30% 30%;
+  border-radius: 60% 80% 20% 20%;
   z-index: 2;
+  transform: rotate(-30deg);
+}
+
+.phoenix-beak {
+  position: absolute;
+  top: 21%;
+  left: 57%;
+  width: 15%;
+  height: 8%;
+  background-color: var(--phoenix-accent);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  z-index: 3;
+  transform: rotate(-30deg);
 }
 
 .phoenix-flames {
@@ -502,16 +814,50 @@ section {
   animation: flames 3s ease-in-out infinite alternate;
 }
 
-/* Midnight (Starry Night) Moon Logo */
+.phoenix-ember {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: var(--phoenix-accent);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 0 0 5px 2px var(--flame-glow);
+  animation: phoenix-ember 3s infinite;
+}
+
+@keyframes phoenix-ember {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(20px, -20px); }
+}
+
+.phoenix-rise {
+  animation: phoenix-rise 2s ease-out;
+  transform-origin: center;
+}
+
+@keyframes phoenix-rise {
+  0% { transform: translateY(10px) scale(0.9); opacity: 0.5; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ENHANCED Midnight (Starry Night) Moon Logo */
 .moon {
   position: absolute;
   width: 70%;
   height: 70%;
   top: 15%;
   left: 15%;
-  background-color: var(--moon-color);
+  background-color: var(--vangogh-yellow);
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(224, 247, 250, 0.6);
+  box-shadow: 0 0 30px var(--vangogh-moon-glow);
+  animation: moonPulse 5s infinite alternate;
+  overflow: hidden;
+}
+
+@keyframes moonPulse {
+  0% { box-shadow: 0 0 20px var(--vangogh-moon-glow); }
+  100% { box-shadow: 0 0 40px var(--vangogh-moon-glow); }
 }
 
 .moon-crater {
@@ -520,8 +866,26 @@ section {
   height: 30%;
   top: 20%;
   left: 55%;
-  background-color: rgba(176, 190, 197, 0.3);
+  background-color: rgba(255, 213, 79, 0.7);
   border-radius: 50%;
+  filter: blur(1px);
+}
+
+.moon-swirl {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background-image: 
+    repeating-conic-gradient(rgba(255, 235, 59, 0) 0deg, rgba(255, 213, 79, 0.1) 15deg, rgba(255, 235, 59, 0) 30deg);
+  animation: moonSwirl 40s linear infinite;
+  z-index: 0;
+}
+
+@keyframes moonSwirl {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .stars {
@@ -532,8 +896,9 @@ section {
 
 .star {
   position: absolute;
-  background-color: var(--star-color);
+  background-color: var(--vangogh-yellow);
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  filter: blur(0.5px);
 }
 
 .star-1 {
@@ -560,6 +925,17 @@ section {
   animation: twinkle 3.5s ease-in-out infinite 1s;
 }
 
+.midnight-cypress {
+  position: absolute;
+  width: 25%;
+  height: 45%;
+  bottom: 0;
+  right: 5%;
+  background-color: var(--vangogh-cypress);
+  clip-path: polygon(40% 0%, 60% 0%, 70% 30%, 55% 45%, 65% 60%, 50% 100%, 30% 60%, 45% 45%, 30% 30%);
+  z-index: 0;
+}
+
 /* Site Title */
 .before-sunrise .site-title {
   position: relative;
@@ -572,15 +948,7 @@ section {
   letter-spacing: 0.02em;
 }
 
-.before-sunrise .site-title::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background: linear-gradient(90deg, var(--accent-color), var(--accent-hover), transparent);
-}
+/* Removed underline under name in Before Sunrise theme */
 
 .before-sunset .site-title {
   background: linear-gradient(45deg, var(--phoenix-primary), var(--phoenix-secondary));
@@ -592,8 +960,8 @@ section {
 
 .before-midnight .site-title {
   margin-left: 0;
-  color: var(--moon-color);
-  text-shadow: 0 0 10px rgba(77, 208, 225, 0.5);
+  color: var(--vangogh-yellow);
+  text-shadow: 0 0 10px rgba(255, 213, 79, 0.5);
 }
 
 /* Header */
@@ -647,6 +1015,42 @@ header {
 
 .nav-link:hover::after {
   height: 100%;
+}
+
+/* Theme-specific nav effects */
+.before-sunrise .nav-link:hover {
+  box-shadow: 0 0 10px var(--data-flow);
+}
+
+.before-sunset .nav-link:hover {
+  box-shadow: 0 0 15px var(--flame-glow);
+}
+
+.before-sunset .nav-link::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  bottom: -5px;
+  left: 0;
+  background: linear-gradient(90deg, var(--flame-glow), transparent);
+  opacity: 0;
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.before-sunset .nav-link:hover::before {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+.before-midnight .nav-link {
+  border: 1px solid transparent;
+}
+
+.before-midnight .nav-link:hover {
+  border-color: var(--vangogh-yellow);
+  box-shadow: 0 0 15px rgba(255, 213, 79, 0.3);
 }
 
 /* Hero Section */
@@ -714,27 +1118,7 @@ header {
   position: relative;
 }
 
-.before-sunrise .hero-title::after {
-  content: "<ML>";
-  position: absolute;
-  top: -1.5rem;
-  right: 1rem;
-  font-size: 1rem;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--terminal-prompt);
-  opacity: 0.6;
-}
-
-.before-sunrise .hero-title::before {
-  content: "</ML>";
-  position: absolute;
-  bottom: -1.5rem;
-  right: 1rem;
-  font-size: 1rem;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--terminal-prompt);
-  opacity: 0.6;
-}
+/* Removed ML tags */
 
 /* Sunset (Phoenix) hero enhancements */
 .before-sunset .hero {
@@ -884,6 +1268,10 @@ header {
   animation: pulse 4s infinite alternate;
 }
 
+.before-sunset .profile-link:hover {
+  box-shadow: 0 5px 15px var(--flame-glow);
+}
+
 /* Midnight (Starry Night) profile enhancements */
 .before-midnight .profile-circle {
   box-shadow: 0 0 30px rgba(25, 118, 210, 0.4);
@@ -898,6 +1286,20 @@ header {
   bottom: 0;
   background-image: radial-gradient(circle at 50% 50%, rgba(79, 195, 247, 0.2), transparent 70%);
   border-radius: 50%;
+}
+
+.before-midnight .profile-circle::after {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  right: -10%;
+  bottom: -10%;
+  background-image: 
+    repeating-conic-gradient(rgba(79, 195, 247, 0) 0deg, rgba(79, 195, 247, 0.1) 15deg, rgba(79, 195, 247, 0) 30deg);
+  border-radius: 50%;
+  animation: moonSwirl 30s linear infinite;
+  z-index: -1;
 }
 
 /* Projects Section */
@@ -973,6 +1375,129 @@ header {
   width: 100%;
 }
 
+/* Project Cards - Theme-specific enhancements */
+
+/* Before Midnight - Van Gogh spirals */
+.before-midnight .project-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.before-midnight .project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400' opacity='0.12'%3E%3Cpath d='M80,100 C120,80 160,120 200,100 C240,80 280,120 320,100' stroke='%234169E1' stroke-width='15' fill='none' opacity='0.5'/%3E%3Cpath d='M80,150 C120,180 160,140 200,170 C240,200 280,160 320,190' stroke='%234169E1' stroke-width='12' fill='none' opacity='0.4'/%3E%3Cpath d='M80,220 C120,190 160,230 200,200 C240,170 280,210 320,180' stroke='%234169E1' stroke-width='10' fill='none' opacity='0.3'/%3E%3Cpath d='M80,270 C120,300 160,260 200,290 C240,320 280,280 320,310' stroke='%234169E1' stroke-width='8' fill='none' opacity='0.2'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.3;
+  animation: vanGoghSwirlProject 40s infinite alternate;
+}
+
+@keyframes vanGoghSwirlProject {
+  0% { transform: scale(1); opacity: 0.2; }
+  50% { transform: scale(1.1); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0.2; }
+}
+
+.before-midnight .project-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(-5px) rotate(0.5deg);
+}
+
+/* Before Sunset - Project cards like starry night but with sunset colors */
+.before-sunset .project-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.before-sunset .project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400' opacity='0.12'%3E%3Cpath d='M80,100 C120,80 160,120 200,100 C240,80 280,120 320,100' stroke='%23ff6f00' stroke-width='15' fill='none' opacity='0.5'/%3E%3Cpath d='M80,150 C120,180 160,140 200,170 C240,200 280,160 320,190' stroke='%23ff6f00' stroke-width='12' fill='none' opacity='0.4'/%3E%3Cpath d='M80,220 C120,190 160,230 200,200 C240,170 280,210 320,180' stroke='%23ff6f00' stroke-width='10' fill='none' opacity='0.3'/%3E%3Cpath d='M80,270 C120,300 160,260 200,290 C240,320 280,280 320,310' stroke='%23ff6f00' stroke-width='8' fill='none' opacity='0.2'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.1;
+  animation: sunsetSwirl 40s infinite alternate;
+}
+
+@keyframes sunsetSwirl {
+  0% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.1); opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0.1; }
+}
+
+.before-sunset .project-card:hover {
+  transform: translateY(-5px) rotate(0.5deg);
+  box-shadow: 0 15px 30px rgba(255, 87, 34, 0.15);
+}
+
+/* Before Sunrise - Project cards like starry night but with sunrise colors */
+.before-sunrise .project-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.before-sunrise .project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400' opacity='0.12'%3E%3Cpath d='M80,100 C120,80 160,120 200,100 C240,80 280,120 320,100' stroke='%233b82f6' stroke-width='15' fill='none' opacity='0.5'/%3E%3Cpath d='M80,150 C120,180 160,140 200,170 C240,200 280,160 320,190' stroke='%233b82f6' stroke-width='12' fill='none' opacity='0.4'/%3E%3Cpath d='M80,220 C120,190 160,230 200,200 C240,170 280,210 320,180' stroke='%233b82f6' stroke-width='10' fill='none' opacity='0.3'/%3E%3Cpath d='M80,270 C120,300 160,260 200,290 C240,320 280,280 320,310' stroke='%233b82f6' stroke-width='8' fill='none' opacity='0.2'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.1;
+  animation: techSwirl 40s infinite alternate;
+}
+
+@keyframes techSwirl {
+  0% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.1); opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0.1; }
+}
+
+.before-sunrise .project-card:hover {
+  transform: translateY(-5px) rotate(0.5deg);
+  box-shadow: 0 15px 30px rgba(14, 165, 233, 0.3);
+}
+
+@keyframes sparkFlash {
+  0% { opacity: 0; }
+  20% { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+@keyframes binaryFloat {
+  0% { 
+    opacity: 0; 
+    transform: translateY(0) translateX(0); 
+  }
+  10% { 
+    opacity: 0.8; 
+  }
+  90% { 
+    opacity: 0.3; 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translateY(-100px) translateX(20px);
+  }
+}
+
 /* Writing Section with Tabs */
 .writing-tabs {
   display: flex;
@@ -1037,6 +1562,80 @@ header {
   transition: color 0.5s ease;
 }
 
+/* Blog Cards - Theme-specific enhancements */
+
+/* Before Sunset - Flying wings effects */
+.before-sunset .post {
+  position: relative;
+  overflow: hidden;
+}
+
+.before-sunset .post::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20,10 C15,15 5,15 0,12 C5,20 15,25 20,30 C25,25 35,20 40,12 C35,15 25,15 20,10 Z' fill='%23ff9800' opacity='0.2'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1;
+  opacity: 0.5;
+  animation: wingFloat 6s infinite alternate;
+}
+
+@keyframes wingFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-5px) rotate(5deg); }
+}
+
+.before-sunset .post::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-image: 
+    radial-gradient(circle at 20% 100%, var(--phoenix-primary) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, var(--phoenix-primary) 0%, transparent 50%),
+    radial-gradient(circle at 80% 100%, var(--phoenix-primary) 0%, transparent 50%);
+  opacity: 0.3;
+  z-index: -1;
+}
+
+/* Before Sunrise - Neural networks */
+.before-sunrise .post {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.before-sunrise .post:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
+}
+
+.before-sunrise .post::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400' opacity='0.1'%3E%3Ccircle cx='100' cy='100' r='5' fill='%233b82f6' opacity='0.7'/%3E%3Ccircle cx='200' cy='100' r='5' fill='%233b82f6' opacity='0.7'/%3E%3Ccircle cx='300' cy='100' r='5' fill='%233b82f6' opacity='0.7'/%3E%3Ccircle cx='150' cy='200' r='5' fill='%233b82f6' opacity='0.7'/%3E%3Ccircle cx='250' cy='200' r='5' fill='%233b82f6' opacity='0.7'/%3E%3Ccircle cx='200' cy='300' r='5' fill='%233b82f6' opacity='0.7'/%3E%3Cline x1='100' y1='100' x2='150' y2='200' stroke='%233b82f6' stroke-width='1' opacity='0.5'/%3E%3Cline x1='200' y1='100' x2='150' y2='200' stroke='%233b82f6' stroke-width='1' opacity='0.5'/%3E%3Cline x1='200' y1='100' x2='250' y2='200' stroke='%233b82f6' stroke-width='1' opacity='0.5'/%3E%3Cline x1='300' y1='100' x2='250' y2='200' stroke='%233b82f6' stroke-width='1' opacity='0.5'/%3E%3Cline x1='150' y1='200' x2='200' y2='300' stroke='%233b82f6' stroke-width='1' opacity='0.5'/%3E%3Cline x1='250' y1='200' x2='200' y2='300' stroke='%233b82f6' stroke-width='1' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  z-index: -1;
+  opacity: 0.15;
+  animation: neuralPulse 8s infinite;
+}
+
+@keyframes neuralPulse {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.2; }
+}
+
 .section-link {
   margin-top: 2rem;
   text-align: center;
@@ -1058,6 +1657,62 @@ header {
   color: white;
   transform: translateY(-3px);
   box-shadow: 0 5px 15px var(--card-shadow);
+}
+
+/* Theme-specific section link effects */
+.before-sunrise .section-link a:hover {
+  box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3), 0 0 2px 1px var(--data-flow);
+}
+
+.before-sunset .section-link a:hover {
+  box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+}
+
+.before-sunset .section-link a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.3rem;
+  background: linear-gradient(45deg, rgba(255, 152, 0, 0.5), rgba(244, 67, 54, 0.5));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.before-sunset .section-link a:hover::before {
+  opacity: 0.8;
+}
+
+.before-midnight .section-link a:hover {
+  box-shadow: 0 5px 15px rgba(79, 195, 247, 0.3);
+  border-color: var(--vangogh-yellow);
+  color: var(--vangogh-yellow);
+  background-color: transparent;
+}
+
+.before-midnight .section-link a::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: 
+    linear-gradient(45deg, transparent 96%, var(--vangogh-blue) 96%),
+    linear-gradient(-45deg, transparent 96%, var(--vangogh-swirl) 96%),
+    linear-gradient(135deg, transparent 96%, var(--vangogh-yellow) 96%),
+    linear-gradient(-135deg, transparent 96%, var(--accent-color) 96%);
+  border-radius: 0.4rem;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.before-midnight .section-link a:hover::after {
+  opacity: 0.6;
 }
 
 /* Footer */
@@ -1137,18 +1792,9 @@ footer {
   font-size: 1.2rem;
 }
 
-.before-sunrise .footer-quote::after {
-  content: "</>";
-  position: absolute;
-  bottom: 0.5rem;
-  right: 1rem;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--terminal-prompt);
-  opacity: 0.3;
-  font-size: 1.2rem;
-}
+/* Removed code ending tag from quote box */
 
-/* Sunset (Phoenix) quote styling */
+/* Sunset (Phoenix) quote styling with majestic phoenix wings */
 .before-sunset .footer-quote {
   background: linear-gradient(to right, rgba(255, 243, 224, 0.9), rgba(255, 236, 179, 0.9));
   box-shadow: 0 5px 15px rgba(255, 111, 0, 0.1);
@@ -1158,6 +1804,20 @@ footer {
 }
 
 .before-sunset .footer-quote::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 60px;
+  height: 60px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30,5 C40,15 50,20 45,30 C50,40 40,45 30,55 C20,45 10,40 15,30 C10,20 20,15 30,5 Z' fill='%23e65100' opacity='0.3'/%3E%3Cpath d='M30,10 C37,18 43,22 40,30 C43,38 37,42 30,50 C23,42 17,38 20,30 C17,22 23,18 30,10 Z' fill='%23ff9800' opacity='0.4'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.before-sunset .footer-quote::after {
   content: "";
   position: absolute;
   bottom: -10px;
@@ -1170,11 +1830,25 @@ footer {
   animation: pulse 5s infinite alternate;
 }
 
-/* Midnight (Starry Night) quote styling */
+/* Midnight (Starry Night) quote styling with Van Gogh tree */
 .before-midnight .footer-quote {
   background-color: rgba(26, 38, 57, 0.8);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   border-radius: 0.5rem;
+  position: relative;
+}
+
+.before-midnight .footer-quote::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  width: 40px;
+  height: 70px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='70' viewBox='0 0 40 70'%3E%3Cpath d='M20,0 C25,5 30,15 25,25 C30,35 20,40 25,50 C15,60 25,70 20,70 C15,70 25,60 15,50 C20,40 10,35 15,25 C10,15 15,5 20,0 Z' fill='%234fc3f7' opacity='0.4'/%3E%3Cpath d='M25,10 C23,15 28,20 24,30 C29,40 21,45 27,55 C23,60 24,60 23,65 C19,55 20,45 15,40 C18,25 20,20 25,10 Z' fill='%234fc3f7' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1;
 }
 
 .footer-credit {
@@ -1265,6 +1939,11 @@ footer {
   0% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 0.6; transform: scale(1.1); }
   100% { opacity: 0.4; transform: scale(1); }
+}
+
+@keyframes swirling {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 20% 20%; }
 }
 
 /* Responsive Styles */

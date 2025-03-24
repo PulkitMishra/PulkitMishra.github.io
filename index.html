@@ -11,6 +11,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body class="before-sunrise">
+    <!-- Circuit animation elements for Sunrise theme -->
+    <div class="data-flow">
+        <!-- Data pulses will be added by JS -->
+    </div>
+    <div class="circuit-nodes">
+        <!-- Circuit nodes will be added by JS -->
+    </div>
+    
+    <!-- Particle effects for Sunset theme -->
+    <div class="particles-container">
+        <!-- Particles will be added by JS -->
+    </div>
+    
     <header>
         <div class="logo">
             <!-- Logo changes based on theme -->
@@ -60,26 +73,30 @@
                     </div>
                 </div>
                 
-                <!-- Sunset (Phoenix) -->
+                <!-- Sunset (Phoenix) - REDESIGNED -->
                 <div class="sunset-logo">
                     <div class="phoenix-symbol">
                         <div class="phoenix-wings"></div>
                         <div class="phoenix-tail"></div>
                         <div class="phoenix-head"></div>
+                        <div class="phoenix-beak"></div>
                         <div class="phoenix-flames"></div>
+                        <!-- Phoenix embers added dynamically -->
                     </div>
                 </div>
                 
-                <!-- Midnight (Starry Moon) -->
+                <!-- Midnight (Starry Night) - REDESIGNED -->
                 <div class="midnight-logo">
                     <div class="moon">
                         <div class="moon-crater"></div>
+                        <div class="moon-swirl"></div>
                     </div>
                     <div class="stars">
                         <div class="star star-1"></div>
                         <div class="star star-2"></div>
                         <div class="star star-3"></div>
                     </div>
+                    <div class="midnight-cypress"></div>
                 </div>
             </div>
             <h1 class="site-title">Pulkit Mishra</h1>
@@ -227,7 +244,7 @@
     </footer>
 
     <script>
-        // Theme toggle functionality
+        // Theme toggle functionality - simpler transitions
         document.getElementById('before-sunrise-toggle').addEventListener('click', function() {
             setTheme('before-sunrise');
         });
@@ -252,14 +269,156 @@
             // Update quote based on theme
             updateQuoteForTheme(themeName);
             
+            // Clean and regenerate theme-specific dynamic elements
+            cleanDynamicElements();
+            generateDynamicElements(themeName);
+            
             // Store theme preference
             localStorage.setItem('theme', themeName);
         }
         
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme);
+        // Create tech/circuit data flow pulses and elements
+        function createDataPulses() {
+            const dataFlow = document.querySelector('.data-flow');
+            const circuitNodes = document.querySelector('.circuit-nodes');
+            
+            dataFlow.innerHTML = ''; // Clear existing pulses
+            circuitNodes.innerHTML = ''; // Clear existing nodes
+            
+            // Create random data pulses
+            for (let i = 0; i < 15; i++) {
+                const pulse = document.createElement('div');
+                pulse.className = 'data-pulse';
+                pulse.style.left = Math.random() * 100 + '%';
+                pulse.style.top = Math.random() * 100 + '%';
+                pulse.style.animationDelay = (Math.random() * 8) + 's';
+                dataFlow.appendChild(pulse);
+            }
+            
+            // Create circuit nodes that pulse with light
+            for (let i = 0; i < 24; i++) {
+                const node = document.createElement('div');
+                node.className = 'circuit-node';
+                node.style.left = Math.random() * 100 + '%';
+                node.style.top = Math.random() * 100 + '%';
+                node.style.animationDelay = (Math.random() * 10) + 's';
+                circuitNodes.appendChild(node);
+            }
+            
+            // Add electric sparks to project cards
+            document.querySelectorAll('.before-sunrise .project-card').forEach(card => {
+                // Add random spark elements
+                for (let i = 0; i < 5; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    spark.style.left = Math.random() * 100 + '%';
+                    spark.style.top = Math.random() * 100 + '%';
+                    
+                    // Set animation
+                    spark.style.animation = `sparkFlash ${2 + Math.random() * 3}s infinite ${Math.random() * 2}s`;
+                    card.appendChild(spark);
+                }
+            });
+        }
+        
+        // Create ember and ash particles for Sunset theme
+        function createPhoenixParticles() {
+            const particlesContainer = document.querySelector('.particles-container');
+            particlesContainer.innerHTML = ''; // Clear existing particles
+            
+            // Create ash particles
+            for (let i = 0; i < 30; i++) {
+                const ash = document.createElement('div');
+                ash.className = 'ash-particle';
+                ash.style.left = Math.random() * 100 + '%';
+                ash.style.animationDelay = (Math.random() * 15) + 's';
+                particlesContainer.appendChild(ash);
+            }
+            
+            // Create ember particles
+            for (let i = 0; i < 15; i++) {
+                const ember = document.createElement('div');
+                ember.className = 'ember-particle';
+                ember.style.left = Math.random() * 100 + '%';
+                ember.style.animationDelay = (Math.random() * 8) + 's';
+                particlesContainer.appendChild(ember);
+            }
+            
+            // Create phoenix ember particles
+            const phoenixSymbol = document.querySelector('.phoenix-symbol');
+            // Clear existing embers
+            const existingEmbers = phoenixSymbol.querySelectorAll('.phoenix-ember');
+            existingEmbers.forEach(ember => ember.remove());
+            
+            // Add new embers
+            for (let i = 0; i < 10; i++) {
+                const ember = document.createElement('div');
+                ember.className = 'phoenix-ember';
+                ember.style.top = 20 + (Math.random() * 50) + '%';
+                ember.style.left = 30 + (Math.random() * 40) + '%';
+                ember.style.animationDelay = (Math.random() * 3) + 's';
+                phoenixSymbol.appendChild(ember);
+            }
+            
+            // Add rising animation to phoenix
+            const phoenix = document.querySelector('.sunset-logo');
+            phoenix.classList.add('phoenix-rise');
+            setTimeout(() => {
+                phoenix.classList.remove('phoenix-rise');
+            }, 2000);
+        }
+        
+        // Function to clean up dynamic elements
+        function cleanDynamicElements() {
+            document.querySelector('.data-flow').innerHTML = '';
+            document.querySelector('.circuit-nodes').innerHTML = '';
+            document.querySelector('.particles-container').innerHTML = '';
+            
+            // Remove binary floaters
+            document.querySelectorAll('.binary-float').forEach(el => el.remove());
+            
+            // Remove phoenix embers
+            const phoenixSymbol = document.querySelector('.phoenix-symbol');
+            if (phoenixSymbol) {
+                const existingEmbers = phoenixSymbol.querySelectorAll('.phoenix-ember');
+                existingEmbers.forEach(ember => ember.remove());
+            }
+        }
+        
+        // Generate dynamic elements based on theme
+        function generateDynamicElements(themeName) {
+            if (themeName === 'before-sunrise') {
+                createDataPulses();
+                createBinaryFloaters();
+            } else if (themeName === 'before-sunset') {
+                createPhoenixParticles();
+            }
+            // Midnight theme doesn't need dynamic JS elements
+        }
+        
+        // Create floating binary (0s and 1s) for Before Sunrise theme
+        function createBinaryFloaters() {
+            const body = document.body;
+            // Remove any existing binary elements
+            document.querySelectorAll('.binary-float').forEach(el => el.remove());
+            
+            // Create 30 floating binary elements
+            for (let i = 0; i < 30; i++) {
+                const binary = document.createElement('div');
+                binary.className = 'binary-float';
+                binary.textContent = Math.random() > 0.5 ? '1' : '0';
+                binary.style.position = 'fixed';
+                binary.style.left = Math.random() * 100 + '%';
+                binary.style.top = Math.random() * 100 + '%';
+                binary.style.color = 'rgba(56, 189, 248, ' + (Math.random() * 0.2 + 0.1) + ')';
+                binary.style.fontSize = (Math.random() * 0.8 + 0.5) + 'rem';
+                binary.style.fontFamily = 'JetBrains Mono, monospace';
+                binary.style.pointerEvents = 'none';
+                binary.style.zIndex = '-1';
+                binary.style.opacity = '0';
+                binary.style.animation = `binaryFloat ${10 + Math.random() * 15}s linear infinite ${Math.random() * 10}s`;
+                body.appendChild(binary);
+            }
         }
         
         // Tab switching for writing section
@@ -279,14 +438,17 @@
             document.getElementById(tabName + '-content').className = 'writing-content';
         }
         
-        // Quote system - manually controlled
+        // Enhanced Quote system with theme connections
         const sunriseQuotes = [
             '"Your work is not who you are, it is what you do. But do your work with dedication as if the final outcome defines you." — Bhagavad Gita',
             '"Technology is best when it brings people together." — Matt Mullenweg',
             '"The purpose of technology is not to confuse the brain but to serve the body." — William S. Burroughs',
             '"Action alone is thy duty, not the fruit of action." — The Bhagavad Gita',
             '"Perfection in action is when you perform the right action with the right attitude." — Karma Yoga',
-            '"I think it\'s possible for two people to make a connection for just one night that lasts forever." — Before Sunrise'
+            '"I think it\'s possible for two people to make a connection for just one night that lasts forever." — Before Sunrise',
+            '"The accelerating pace of technological change requires philosophical grounding." — Digital Dharma',
+            '"Code is poetry, algorithms are literature, data is art." — Technodharma',
+            '"Intelligence emerges from structured chaos, like order from randomness." — Complexity Theory'
         ];
         
         const sunsetQuotes = [
@@ -294,7 +456,11 @@
             '"There\'s an old saying in alchemy: \'Be thou for the people.\' Alchemists have always been the servants of the people." — Fullmetal Alchemist',
             '"A lesson without pain is meaningless. For you cannot gain anything without sacrificing something else in return." — Fullmetal Alchemist',
             '"Rise from the ashes and recreate yourself whenever life burns you down." — Shah Faesal',
-            '"I\'m gonna be a mature and responsible adult starting tomorrow." — Before Sunset'
+            '"I\'m gonna be a mature and responsible adult starting tomorrow." — Before Sunset',
+            '"The phoenix must burn to emerge." — Janet Fitch',
+            '"What matters most is how well you walk through the fire." — Charles Bukowski',
+            '"Transformation is a process, and as life happens you create yourself anew." — Oprah Winfrey',
+            '"The fire that destroys is also the fire that purifies." — Ancient Proverb'
         ];
         
         const midnightQuotes = [
@@ -303,7 +469,10 @@
             '"Chess is life in miniature. Chess is a struggle, chess is battles." — Garry Kasparov',
             '"Great art picks up where nature ends." — Marc Chagall',
             '"Look at the sky. We are not alone. The whole universe is friendly to us and conspires only to give the best to those who dream and work." — A.P.J. Abdul Kalam',
-            '"Sometimes you just have to embrace the magic of life." — Before Midnight'
+            '"Sometimes you just have to embrace the magic of life." — Before Midnight',
+            '"I put my heart and soul into my work, and I have lost my mind in the process." — Vincent Van Gogh',
+            '"The night was clear and stars were shining. And somehow I felt as if the stars were a part of me." — Vincent Van Gogh',
+            '"The more I think about it, the more I realize there is nothing more artistic than to love others." — Vincent Van Gogh'
         ];
         
         const commonQuotes = [
@@ -333,24 +502,20 @@
             const currentIndex = currentQuoteIndex[theme];
             const quote = themeQuotes[theme][currentIndex];
             
-            // Update the quote text
-            quoteElement.textContent = quote;
-        }
-        
-        document.getElementById('next-quote').addEventListener('click', function() {
-            const currentTheme = document.body.className;
-            currentQuoteIndex[currentTheme] = (currentQuoteIndex[currentTheme] + 1) % themeQuotes[currentTheme].length;
-            
-            const quoteElement = document.getElementById('current-quote');
-            const quote = themeQuotes[currentTheme][currentQuoteIndex[currentTheme]];
-            
-            // Fade effect
+            // Update the quote text with fade effect
             quoteElement.style.opacity = 0;
             
             setTimeout(() => {
                 quoteElement.textContent = quote;
                 quoteElement.style.opacity = 1;
             }, 300);
+        }
+        
+        document.getElementById('next-quote').addEventListener('click', function() {
+            const currentTheme = document.body.className.split(' ')[0]; // Get only the theme name
+            currentQuoteIndex[currentTheme] = (currentQuoteIndex[currentTheme] + 1) % themeQuotes[currentTheme].length;
+            
+            updateQuoteForTheme(currentTheme);
         });
         
         function shuffleArray(array) {
@@ -361,6 +526,22 @@
             }
             return newArray;
         }
+        
+        // Check for saved theme preference and initialize
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.className = savedTheme;
+            document.getElementById(savedTheme + '-toggle').classList.add('active');
+            updateQuoteForTheme(savedTheme);
+        } else {
+            updateQuoteForTheme('before-sunrise');
+        }
+        
+        // Initialize dynamic elements on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTheme = document.body.className.split(' ')[0];
+            generateDynamicElements(currentTheme);
+        });
     </script>
 </body>
 </html>
