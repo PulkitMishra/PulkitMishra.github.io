@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} | Pulkit Mishra</title>
+    <meta name="description" content="{{description}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    
+    <link rel="preload" href="/assets/css/styles.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/css/styles.min.css"></noscript>
+    
+    <link rel="preload" href="/assets/js/scripts.min.js" as="script">
+    <link rel="preload" href="/assets/images/avatar.png" as="image">
+</head>
+<body class="{{theme_class}}">
+    <div class="data-flow"></div>
+    <div class="circuit-nodes"></div>
+    <div class="particles-container"></div>
+    
+    <header>
+        <div class="logo">
+            <div class="logo-container">
+    <!-- Sunrise (Tech) -->
+    <div class="sunrise-logo">
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-btn terminal-btn-red"></div>
+                <div class="terminal-btn terminal-btn-yellow"></div>
+                <div class="terminal-btn terminal-btn-green"></div>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">></span>
+                    <span class="terminal-command"></span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">></span>
+                    <span class="terminal-result">Epoch 1/10</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">></span>
+                    <span class="terminal-result loading">loss: 0.314</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sunset (Phoenix) -->
+    <div class="sunset-logo">
+        <div class="phoenix-symbol">
+            <div class="phoenix-wings"></div>
+            <div class="phoenix-tail"></div>
+            <div class="phoenix-head"></div>
+            <div class="phoenix-beak"></div>
+            <div class="phoenix-flames"></div>
+        </div>
+    </div>
+    
+    <!-- Midnight (Starry Night) -->
+    <div class="midnight-logo">
+        <div class="moon">
+            <div class="moon-crater"></div>
+            <div class="moon-swirl"></div>
+        </div>
+        <div class="stars">
+            <div class="star star-1"></div>
+            <div class="star star-2"></div>
+            <div class="star star-3"></div>
+        </div>
+        <div class="midnight-cypress"></div>
+    </div>
+</div>
+            <h1 class="site-title">Pulkit Mishra</h1>
+        </div>
+        <div class="nav-container">
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="main-nav" id="main-nav">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#blog" class="nav-link">Blog</a>
+                <a href="#connect" class="nav-link">Connect</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="theme-toggle">
+    <button class="theme-trigger" id="theme-trigger" aria-label="Choose theme">
+        🎨
+    </button>
+    <div class="theme-popup" id="theme-popup">
+        <button class="theme-option active" id="sunrise-option" data-theme="before-sunrise">
+            <span class="theme-option-icon">☀️</span>
+            <span class="theme-option-text">Sunrise</span>
+        </button>
+        <button class="theme-option" id="sunset-option" data-theme="before-sunset">
+            <span class="theme-option-icon">🌅</span>
+            <span class="theme-option-text">Sunset</span>
+        </button>
+        <button class="theme-option" id="midnight-option" data-theme="before-midnight">
+            <span class="theme-option-icon">🌃</span>
+            <span class="theme-option-text">Midnight</span>
+        </button>
+    </div>
+</div>
+
+    <main>
+        {{> home-content}}
+    </main>
+
+    <footer>
+    <div class="quote-container">
+        <blockquote id="current-quote" class="footer-quote">
+            "Your work is not who you are, it is what you do. But do your work with dedication as if the final outcome defines you." — Bhagavad Gita
+        </blockquote>
+        <button id="next-quote" class="quote-button" aria-label="Show next quote">
+            <span class="quote-icon">⟳</span>
+        </button>
+    </div>
+    <div class="footer-credit">
+        <p>© 2025 Pulkit Mishra — Always rising, always learning</p>
+    </div>
+</footer>
+
+    <script src="/assets/js/scripts.min.js" defer></script>
+</body>
+</html>

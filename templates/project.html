@@ -1,0 +1,117 @@
+<!-- Project Hero Section -->
+<section class="project-hero">
+    <div class="project-breadcrumb">
+        <a href="/">Home</a> <span>/</span> <a href="/projects">Projects</a> <span>/</span> <span>{{project_name}}</span>
+    </div>
+    <h1 class="project-title">{{title}}</h1>
+    <p class="project-subtitle">{{subtitle}}</p>
+    
+    <div class="project-meta">
+        <div class="project-tags">
+            {{#each tags}}
+            <span class="tag">{{this}}</span>
+            {{/each}}
+        </div>
+        <div class="project-info">
+            <span class="project-date">{{date}}</span>
+            {{#if github_url}}
+            <a href="{{github_url}}" class="project-link" target="_blank" rel="noopener">
+                <span class="link-icon">🔗</span> GitHub
+            </a>
+            {{/if}}
+            {{#if demo_url}}
+            <a href="{{demo_url}}" class="project-link" target="_blank" rel="noopener">
+                <span class="link-icon">🚀</span> Live Demo
+            </a>
+            {{/if}}
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="project-content">
+    <div class="content-grid">
+        <main class="project-main">
+            {{#if featured_image}}
+            <div class="project-image">
+                <img src="{{featured_image}}" alt="{{title}}" loading="lazy">
+            </div>
+            {{/if}}
+            
+            <div class="project-body">
+                {{content}}
+            </div>
+        </main>
+        
+        <aside class="project-sidebar">
+            <div class="sidebar-section">
+                <h3>Quick Facts</h3>
+                <dl class="project-facts">
+                    {{#if tech_stack}}
+                    <dt>Tech Stack</dt>
+                    <dd>{{tech_stack}}</dd>
+                    {{/if}}
+                    
+                    {{#if duration}}
+                    <dt>Duration</dt>
+                    <dd>{{duration}}</dd>
+                    {{/if}}
+                    
+                    {{#if team_size}}
+                    <dt>Team Size</dt>
+                    <dd>{{team_size}}</dd>
+                    {{/if}}
+                    
+                    {{#if role}}
+                    <dt>My Role</dt>
+                    <dd>{{role}}</dd>
+                    {{/if}}
+                </dl>
+            </div>
+            
+            {{#if key_achievements}}
+            <div class="sidebar-section">
+                <h3>Key Achievements</h3>
+                <ul class="achievements-list">
+                    {{#each key_achievements}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+            
+            {{#if related_projects}}
+            <div class="sidebar-section">
+                <h3>Related Projects</h3>
+                <div class="related-projects">
+                    {{#each related_projects}}
+                    <a href="/projects/{{slug}}" class="related-project">
+                        <h4>{{title}}</h4>
+                        <p>{{description}}</p>
+                    </a>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+        </aside>
+    </div>
+</section>
+
+<!-- Project Navigation -->
+<section class="project-navigation">
+    {{#if prev_project}}
+    <a href="/projects/{{prev_project.slug}}" class="nav-project nav-prev">
+        <span class="nav-direction">← Previous</span>
+        <span class="nav-title">{{prev_project.title}}</span>
+    </a>
+    {{/if}}
+    
+    <a href="/projects" class="nav-all-projects">All Projects</a>
+    
+    {{#if next_project}}
+    <a href="/projects/{{next_project.slug}}" class="nav-project nav-next">
+        <span class="nav-direction">Next →</span>
+        <span class="nav-title">{{next_project.title}}</span>
+    </a>
+    {{/if}}
+</section>

@@ -1,0 +1,74 @@
+<section class="hero">
+    <h2 class="hero-title">ML Research & Engineering</h2>
+    <p class="hero-subtitle">Building intelligent systems with rigorous research and scalable engineering</p>
+    <div class="hero-pattern"></div>
+</section>
+
+<section id="about" class="about">
+    <h2>About Me</h2>
+    <div class="about-content">
+        <div class="about-text">
+            <p>I'm a <strong>Machine Learning Engineer</strong> at Google, developing the ML platform for Google Pay. My work spans the full ML lifecycle, from foundational research to production systems at scale. I've been immersed in the generative AI space for quite a while and closely follow its rapid developments.</p>
+            <p>Previously at Jio AICoE, I led initiatives on improving reasoning in small language models and built real-time computer vision systems. I worked across the ML spectrum - from training models to deployment, be it as REST APIs or on edge devices while also building expertise in MLOps and ML infrastructure.</p>
+            <p>I see machine learning as modern alchemy, transforming raw data into intelligence through mathematical transmutation. In this pursuit, I follow the principle of equivalent exchange: meaningful insights require rigorous work and careful thought.</p>
+        </div>
+        <div class="about-image">
+            <div class="profile-circle"></div>
+            <div class="links-container">
+              <a href="https://github.com/PulkitMishra" class="profile-link" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://linkedin.com/in/pulkit-mishra" class="profile-link" target="_blank" rel="noopener">LinkedIn</a>
+              <a href="mailto:pulkitmishra007@gmail.com" class="profile-link">Email</a>
+              <a href="https://x.com/its_only_words_" class="profile-link" target="_blank" rel="noopener">Twitter</a>
+              <a href="assets/PulkitMishra_Resume.pdf" class="profile-link" target="_blank" rel="noopener">Resume</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="projects" class="projects-section">
+    <h2>Featured Projects</h2>
+    <div class="projects-grid">
+        {{#each projects}}
+        <article class="project-card">
+            <h3>{{this.title}}</h3>
+            <p>{{this.description}}</p>
+            <a href="#projects/{{this.slug}}">View project →</a>
+        </article>
+        {{/each}}
+    </div>
+    <div class="section-link">
+        <a href="#projects">See all projects →</a>
+    </div>
+</section>
+
+<section id="blog" class="writing-section">
+    <h2>Writing</h2>
+    <div class="writing-tabs">
+        <button class="tab-active" id="technical-tab" data-tab="technical">Technical</button>
+        <button class="tab" id="reflections-tab" data-tab="reflections">Reflections</button>
+    </div>
+    <div class="writing-content" id="technical-content">
+        {{#each technical_posts}}
+        <article class="post">
+            <div class="post-meta">{{this.date}}</div>
+            <h3><a href="#blog/{{this.slug}}">{{this.title}}</a></h3>
+            <p>{{this.description}}</p>
+        </article>
+        {{/each}}
+        <div class="section-link">
+            <a href="#blog/technical">Read all technical posts →</a>
+        </div>
+    </div>
+    <div class="writing-content hidden" id="reflections-content">
+        {{#each reflection_posts}}
+        <article class="post">
+            <div class="post-meta">{{this.date}}</div>
+            <h3><a href="#blog/{{this.slug}}">{{this.title}}</a></h3>
+            <p>{{this.description}}</p>
+        </article>
+        {{/each}}
+        <div class="section-link">
+            <a href="#blog/reflections">Read all reflections →</a>
+        </div>
+    </div>
+</section>

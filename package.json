@@ -1,0 +1,36 @@
+{
+  "name": "pulkit-portfolio",
+  "version": "1.0.0",
+  "description": "Production-ready portfolio with three themes",
+  "main": "build.js",
+  "scripts": {
+    "dev": "node scripts/dev-server.js",
+    "build": "node build.js",
+    "build:prod": "NODE_ENV=production node build.js",
+    "serve": "node scripts/serve.js",
+    "test": "node scripts/test.js",
+    "deploy": "npm run build:prod && node scripts/deploy-github.js",
+    "format": "prettier --write 'templates/**/*.html' 'assets/**/*.{css,js}'",
+    "lint": "eslint assets/js/**/*.js"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "express": "^4.21.2",
+    "helmet": "^7.2.0"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "chokidar": "^3.6.0",
+    "clean-css": "^5.3.3",
+    "fs-extra": "^11.3.1",
+    "handlebars": "^4.7.8",
+    "html-minifier-terser": "^7.2.0",
+    "marked": "^9.1.6",
+    "ora": "^5.4.1",
+    "sharp": "^0.32.6",
+    "terser": "^5.43.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

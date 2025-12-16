@@ -1,0 +1,16 @@
+{
+  "name": "Pulkit Mishra - ML Engineer",
+  "short_name": "Pulkit Mishra",
+  "description": "Machine Learning Engineer and Researcher",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f7ff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}

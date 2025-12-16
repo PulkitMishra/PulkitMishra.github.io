@@ -1,0 +1,485 @@
+/* Complete Theme Variables and Animations */
+
+/* Before Sunrise (Tech Morning) */
+.before-sunrise {
+  /* Morning color palette */
+  --background: #f0f7ff;
+  --text-color: #334155;
+  --heading-color: #1e40af;
+  --accent-color: #3b82f6;
+  --accent-hover: #f97316;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(14, 165, 233, 0.08);
+  --card-border: #e0f2fe;
+  --hero-bg-start: rgba(224, 242, 254, 0.8);
+  --hero-bg-end: rgba(240, 249, 255, 0.7);
+  --nav-bg: #e0f2fe;
+  --nav-text: #0369a1;
+  --nav-hover: #0ea5e9;
+  --quote-bg: #f0f9ff;
+  --section-line: #0ea5e9;
+  
+  /* Tech terminal colors */
+  --terminal-bg: #1e293b;
+  --terminal-border: #475569;
+  --terminal-text: #38bdf8;
+  --terminal-prompt: #f97316;
+  --terminal-result: #4ade80;
+  
+  /* Neural network elements */
+  --node-primary: #0ea5e9;
+  --node-secondary: #38bdf8;
+  --connection-color: rgba(56, 189, 248, 0.5);
+  --grid-color: rgba(14, 165, 233, 0.1);
+  
+  /* Profile and gradients */
+  --profile-gradient: linear-gradient(135deg, #0ea5e9, #0284c7);
+  --tech-metallic: linear-gradient(135deg, #0f172a, #334155, #64748b, #334155);
+  
+  /* Enhanced circuit elements */
+  --circuit-line: rgba(14, 165, 233, 0.4);
+  --circuit-node: rgba(14, 165, 233, 0.6);
+  --silicon-grid: rgba(14, 165, 233, 0.15);
+  --data-flow: rgba(79, 209, 197, 0.5);
+  --spark-color: rgba(56, 189, 248, 0.7);
+}
+
+/* Before Sunset (Phoenix) */
+.before-sunset {
+  --background: #fff8f0;
+  --text-color: #5d4037;
+  --heading-color: #e65100;
+  --accent-color: #ff6f00;
+  --accent-hover: #f4511e;
+  --card-bg: #fffaf0;
+  --card-shadow: rgba(230, 81, 0, 0.1);
+  --card-border: #ffe0b2;
+  --hero-bg-start: rgba(255, 243, 224, 0.8);
+  --hero-bg-end: rgba(255, 248, 225, 0.9);
+  --nav-bg: #ffecb3;
+  --nav-text: #e65100;
+  --nav-hover: #ff6f00;
+  --quote-bg: #fff3e0;
+  --section-line: #ff6f00;
+  --phoenix-primary: #ff9800;
+  --phoenix-secondary: #f44336;
+  --phoenix-accent: #ffeb3b;
+  --flame-glow: rgba(255, 87, 34, 0.3);
+  --profile-gradient: linear-gradient(135deg, #FF9800, #F44336);
+  
+  /* Enhanced phoenix elements */
+  --ember-color: rgba(255, 152, 0, 0.7);
+  --ash-color: rgba(255, 255, 255, 0.4);
+  --deep-orange: #bf360c;
+  --phoenix-wing: #ff5722;
+  --phoenix-body: #e64a19;
+  --phoenix-tail: linear-gradient(to bottom, #ff9800, #f44336);
+  --flame-trail: rgba(255, 87, 34, 0.4);
+}
+
+/* Before Midnight (Starry Night) */
+.before-midnight {
+  --background: #0d1b2a;
+  --text-color: #e0e7ff;
+  --heading-color: #90caf9;
+  --accent-color: #4fc3f7;
+  --accent-hover: #ffd54f;
+  --card-bg: #1a2639;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-border: #1e3a5f;
+  --hero-bg-start: rgba(13, 27, 42, 0.7);
+  --hero-bg-end: rgba(13, 27, 42, 0.9);
+  --nav-bg: #1e3a5f;
+  --nav-text: #e0e7ff;
+  --nav-hover: #ffd54f;
+  --quote-bg: #1a2639;
+  --section-line: #4fc3f7;
+  --star-color: #ffd54f;
+  --moon-color: #e0f7fa;
+  --swirl-color1: #304ffe;
+  --swirl-color2: #90caf9;
+  --profile-gradient: linear-gradient(135deg, #1a237e, #0d47a1);
+  
+  /* Enhanced starry night elements */
+  --vangogh-blue: #1a237e;
+  --vangogh-deep-blue: #0d1b2a;
+  --vangogh-yellow: #ffeb3b;
+  --vangogh-moon-glow: rgba(255, 235, 59, 0.3);
+  --vangogh-swirl: rgba(65, 105, 225, 0.4);
+  --vangogh-cypress: #263238;
+  --brush-stroke: rgba(144, 202, 249, 0.15);
+}
+
+/* Tech Grid Background Pattern - ENHANCED */
+.before-sunrise::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* Silicon chip grid structure only */
+    linear-gradient(to right, transparent 49px, var(--silicon-grid) 49px, var(--silicon-grid) 50px, transparent 50px),
+    linear-gradient(to bottom, transparent 49px, var(--silicon-grid) 49px, var(--silicon-grid) 50px, transparent 50px),
+    /* Circuit nodes */
+    radial-gradient(circle at 25% 25%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    radial-gradient(circle at 75% 25%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    radial-gradient(circle at 25% 75%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, var(--circuit-node) 0, var(--circuit-node) 2px, transparent 2px),
+    /* Circuit lines */
+    linear-gradient(90deg, transparent 45%, var(--circuit-line) 45%, var(--circuit-line) 55%, transparent 55%),
+    linear-gradient(180deg, transparent 45%, var(--circuit-line) 45%, var(--circuit-line) 55%, transparent 55%);
+  background-size: 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px, 50px 50px;
+  z-index: -1;
+  animation: circuitPulse 10s infinite alternate;
+}
+
+/* Sunset Background - ENHANCED */
+.before-sunset::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    /* Deeper orange gradient */
+    linear-gradient(135deg, var(--deep-orange) 0%, rgba(255, 143, 0, 0.3) 50%, rgba(255, 235, 59, 0.1) 100%),
+    /* Wing-shaped patterns */
+    radial-gradient(ellipse at 20% 40%, transparent 50%, rgba(255, 87, 34, 0.05) 50%),
+    radial-gradient(ellipse at 80% 40%, transparent 50%, rgba(255, 87, 34, 0.05) 50%);
+  z-index: -1;
+  opacity: 0.4;
+}
+
+/* Starry Night Background - ENHANCED for Before Midnight theme */
+.before-midnight::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* Enhanced starry elements */
+    radial-gradient(1.5px 1.5px at 25% 15%, var(--vangogh-yellow), transparent),
+    radial-gradient(2px 2px at 50% 40%, var(--accent-color), transparent),
+    radial-gradient(2.5px 2.5px at 75% 25%, var(--vangogh-yellow), transparent),
+    radial-gradient(3px 3px at 20% 60%, var(--vangogh-yellow), transparent),
+    radial-gradient(3.5px 3.5px at 90% 75%, var(--accent-color), transparent),
+    radial-gradient(3px 3px at 10% 85%, var(--vangogh-yellow), transparent),
+    radial-gradient(2px 2px at 60% 95%, var(--accent-color), transparent),
+    radial-gradient(2.5px 2.5px at 70% 5%, var(--accent-color), transparent),
+    /* Base gradient */
+    linear-gradient(to bottom, var(--vangogh-deep-blue), #0d1b2a);
+  background-size: 300px 300px, 200px 200px, 250px 250px, 300px 300px, 200px 200px, 250px 250px, 300px 300px, 200px 200px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, center center;
+  z-index: -1;
+  opacity: 1;
+  animation: slowSwirl 180s linear infinite;
+}
+
+/* Background animations */
+@keyframes circuitPulse {
+  0%, 100% { opacity: 0.5; box-shadow: none; }
+  50% { opacity: 0.7; box-shadow: 0 0 5px 2px var(--data-flow); }
+}
+
+@keyframes slowSwirl {
+  0% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, center center; }
+  100% { background-position: 100% 100%, 50% 50%, 30% 70%, 70% 30%, 20% 80%, 80% 20%, 40% 60%, 60% 40%, center center; }
+}
+
+/* Terminal Typewriter Animation - FIXED */
+.terminal-command::before {
+  content: 'model.train()';
+  width: 0;
+  overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
+  animation: typeText 3s steps(13) 1s both;
+}
+
+.terminal-command::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 8px;
+  background-color: var(--terminal-text);
+  margin-left: 1px;
+  animation: typeCursor 3s linear 1s both, blinkCursor 0.8s infinite 4s;
+}
+
+@keyframes typeText {
+  0% { width: 0; }
+  100% { width: 13ch; }
+}
+
+@keyframes typeCursor {
+  0% { opacity: 1; }
+  99% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Loading dots animation */
+.terminal-result.loading::after {
+  content: '';
+  animation: loadingDots 2s infinite 7s;
+}
+
+@keyframes loadingDots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60% { content: '...'; }
+  80% { content: '....'; }
+  100% { content: '.....'; }
+}
+
+/* Phoenix animations - ENHANCED */
+@keyframes wings-flap {
+  0% { transform: scaleX(1) scaleY(1); }
+  50% { transform: scaleX(0.9) scaleY(0.95); }
+  100% { transform: scaleX(1.1) scaleY(1.05); }
+}
+
+@keyframes tail-wave {
+  0% { transform: rotate(-5deg) scaleY(1); }
+  50% { transform: rotate(5deg) scaleY(1.1); }
+  100% { transform: rotate(-5deg) scaleY(1); }
+}
+
+@keyframes flames {
+  0% { opacity: 0.4; transform: scale(1); filter: blur(3px); }
+  50% { opacity: 0.6; transform: scale(1.1); filter: blur(4px); }
+  100% { opacity: 0.4; transform: scale(1); filter: blur(3px); }
+}
+
+/* Moon and star animations - ENHANCED */
+@keyframes moonPulse {
+  0% { box-shadow: 0 0 20px var(--vangogh-moon-glow); }
+  100% { box-shadow: 0 0 40px var(--vangogh-moon-glow); }
+}
+
+@keyframes moonSwirl {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Additional component-specific animations */
+
+/* Profile circle enhancements */
+.before-sunrise .profile-circle::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  animation: orbit 10s linear infinite;
+  z-index: 2;
+}
+
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(130px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(130px) rotate(-360deg); }
+}
+
+.before-sunset .profile-circle::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 193, 7, 0.2), rgba(255, 87, 34, 0.2));
+  border-radius: 50%;
+  z-index: -1;
+  animation: phoenixGlow 4s infinite alternate;
+}
+
+@keyframes phoenixGlow {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.before-midnight .profile-circle::after {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  right: -10%;
+  bottom: -10%;
+  background-image: 
+    repeating-conic-gradient(rgba(79, 195, 247, 0) 0deg, rgba(79, 195, 247, 0.1) 15deg, rgba(79, 195, 247, 0) 30deg);
+  border-radius: 50%;
+  animation: moonSwirl 30s linear infinite;
+  z-index: -1;
+}
+
+/* Hero section patterns */
+.before-sunrise .hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 20px, var(--grid-color) 20px, var(--grid-color) 21px),
+    repeating-linear-gradient(-45deg, transparent, transparent 20px, var(--grid-color) 20px, var(--grid-color) 21px),
+    linear-gradient(to right, rgba(14, 165, 233, 0.05), rgba(59, 130, 246, 0.05)),
+    radial-gradient(circle at 75% 25%, rgba(56, 189, 248, 0.1), transparent 50%);
+  z-index: 0;
+}
+
+.before-sunrise .hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(0deg, var(--background), transparent);
+  z-index: 1;
+}
+
+.before-sunrise .hero-title {
+  background: linear-gradient(90deg, #0369a1, #0ea5e9, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
+  position: relative;
+}
+
+.before-sunset .hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 111, 0, 0.1), transparent 70%);
+  z-index: 0;
+}
+
+.before-sunset .hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: -50px;
+  right: -50px;
+  height: 100px;
+  background: linear-gradient(180deg, transparent, rgba(255, 111, 0, 0.05));
+  transform: skewY(-2deg);
+}
+
+/* Navigation theme effects */
+.before-sunrise .nav-link:hover {
+  box-shadow: 0 0 10px var(--data-flow);
+}
+
+.before-sunset .nav-link:hover {
+  box-shadow: 0 0 15px var(--flame-glow);
+}
+
+.before-sunset .nav-link::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  bottom: -5px;
+  left: 0;
+  background: linear-gradient(90deg, var(--flame-glow), transparent);
+  opacity: 0;
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.before-sunset .nav-link:hover::before {
+  opacity: 1;
+  transform: translateY(-5px);
+}
+
+.before-midnight .nav-link {
+  border: 1px solid transparent;
+}
+
+.before-midnight .nav-link:hover {
+  border-color: var(--vangogh-yellow);
+  box-shadow: 0 0 15px rgba(255, 213, 79, 0.3);
+}
+
+/* Theme-specific link hover effects */
+.before-sunrise a::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-color), var(--data-flow));
+  transition: width 0.3s ease;
+  opacity: 0;
+}
+
+.before-sunrise a:hover::before {
+  width: 100%;
+  opacity: 1;
+}
+
+.before-sunset a::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--ember-color), transparent);
+  opacity: 0;
+  filter: blur(1px);
+  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.before-sunset a:hover::before {
+  opacity: 1;
+  filter: blur(1.5px);
+  transform: scaleX(1);
+}
+
+.before-midnight a {
+  display: inline-block;
+}
+
+.before-midnight a::before {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--vangogh-yellow), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: scale(0.5);
+}
+
+.before-midnight a:hover::before {
+  opacity: 0.7;
+  transform: scale(1);
+}
