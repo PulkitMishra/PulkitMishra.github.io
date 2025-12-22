@@ -24,10 +24,34 @@ class ProductionBuilder {
   }
 
   setupMarked() {
+    // Custom renderer for code blocks
+    const renderer = {
+      code(code, language) {
+        // Handle both old and new marked API
+        const codeText = typeof code === 'object' ? code.text : code;
+        const lang = (typeof code === 'object' ? code.lang : language) || '';
+        
+        const escapedCode = codeText
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+        
+        if (lang === 'mermaid') {
+          return `<pre><code class="language-mermaid">${escapedCode}</code></pre>`;
+        }
+        
+        const langClass = lang ? `language-${lang}` : '';
+        return `<pre><code class="${langClass}">${escapedCode}</code></pre>`;
+      }
+    };
+    
+    marked.use({ renderer });
+    
     marked.setOptions({
       gfm: true,
-      breaks: true,
-      smartypants: true,
+      breaks: true
     });
   }
 
@@ -37,7 +61,7 @@ class ProductionBuilder {
 
     // Replace simple variables: {{variable}}
     result = result.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-      return data[key] || '';
+      return data[key] !== undefined ? data[key] : '';
     });
 
     // Handle conditionals: {{#if condition}}content{{/if}}
@@ -182,6 +206,37 @@ self.addEventListener('fetch', event => {
     }
   }
 
+  generateSiteDataJSON() {
+    // Load blog content from markdown files
+    const blogContent = {};
+    
+    this.config.blog_posts.forEach(post => {
+      if (post.content_file) {
+        const mdPath = path.join('content/blog', post.content_file);
+        if (fs.existsSync(mdPath)) {
+          try {
+            const mdContent = fs.readFileSync(mdPath, 'utf8');
+            // Convert markdown to HTML
+            const htmlContent = marked(mdContent);
+            blogContent[post.slug] = htmlContent;
+          } catch (error) {
+            console.warn(chalk.yellow(`Warning: Could not load ${mdPath}`));
+          }
+        }
+      }
+    });
+    
+    // Create a JSON object with all the data the router needs
+    const siteData = {
+      projects: this.config.projects,
+      blog_posts: this.config.blog_posts,
+      blog_content: blogContent,
+      social_links: this.config.social_links,
+      site: this.config.site
+    };
+    return JSON.stringify(siteData);
+  }
+
   generateBaseHTML() {
     return `<!DOCTYPE html>
 <html lang="en">
@@ -197,6 +252,11 @@ self.addEventListener('fetch', event => {
     <link rel="manifest" href="/manifest.json">
 </head>
 <body class="{{theme_class}}">
+    <!-- Site data for router -->
+    <script>
+        window.siteData = {{site_data_json}};
+    </script>
+    
     <!-- Dynamic background elements -->
     <div class="data-flow"></div>
     <div class="circuit-nodes"></div>
@@ -256,7 +316,7 @@ self.addEventListener('fetch', event => {
                     <div class="midnight-cypress"></div>
                 </div>
             </div>
-            <h1 class="site-title"><a href="/">Pulkit Mishra</a></h1>
+            <h1 class="site-title"><a href="#">Pulkit Mishra</a></h1>
         </div>
         
         <!-- Navigation -->
@@ -268,7 +328,7 @@ self.addEventListener('fetch', event => {
             </div>
             
             <nav class="main-nav" id="main-nav">
-                <a href="/" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Home</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#blog" class="nav-link">Blog</a>
                 <a href="#connect" class="nav-link">Connect</a>
@@ -297,7 +357,11 @@ self.addEventListener('fetch', event => {
         </div>
     </div>
 
-    <main>
+    <!-- Dynamic content container (for router) -->
+    <div id="dynamic-container"></div>
+    
+    <!-- Main content (homepage) -->
+    <main id="main-content">
         {{content}}
     </main>
 
@@ -380,7 +444,7 @@ self.addEventListener('fetch', event => {
                 `).join('')}
             </div>
             <div class="section-link">
-                <a href="#projects">See all projects →</a>
+                <a href="#projects/all">See all projects →</a>
             </div>
         </section>
 
@@ -424,7 +488,8 @@ self.addEventListener('fetch', event => {
         description: this.config.site.description,
         theme_class: 'before-sunrise',
         content: homeContent,
-        register_sw: true
+        register_sw: true,
+        site_data_json: this.generateSiteDataJSON()
       };
 
       const baseTemplate = this.generateBaseHTML();
