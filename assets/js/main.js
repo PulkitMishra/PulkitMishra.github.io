@@ -230,18 +230,20 @@
                     
                     <article class="blog-article">
                         <header class="blog-header">
-                            <div class="blog-meta-line">
-                                <span class="blog-date">${post.date}</span>
-                                <span class="meta-separator">•</span>
-                                <span class="blog-category">${post.category}</span>
-                                <span class="meta-separator">•</span>
-                                <span class="blog-reading-time">${post.reading_time}</span>
-                            </div>
                             <h1>${post.title}</h1>
-                            <div class="blog-tags">
-                                ${(post.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
                         </header>
+                        
+                        <div class="blog-meta-line">
+                            <span class="blog-date">${post.date}</span>
+                            <span class="meta-separator"></span>
+                            <span class="blog-category">${post.category}</span>
+                            <span class="meta-separator"></span>
+                            <span class="blog-reading-time">${post.reading_time}</span>
+                        </div>
+                        
+                        <div class="blog-tags">
+                            ${(post.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
                         
                         <div class="blog-content-wrapper">
                             <div class="blog-content">
@@ -1271,7 +1273,10 @@
             color: var(--nav-text);
         }
         
-        /* Blog article styles */
+        /* ============================================
+           BLOG ARTICLE STYLES - CLEAN SEPARATION
+           ============================================ */
+        
         .blog-post-page {
             max-width: 900px;
             margin: 0 auto;
@@ -1284,75 +1289,106 @@
             overflow: hidden;
         }
         
-        /* Blog Header - Clean stacked layout */
+        /* Blog Header - Title only, clean and focused */
         .blog-header {
-            padding: 3rem 3rem 2.5rem;
+            padding: 4rem 3rem 3rem;
             background: linear-gradient(135deg, var(--hero-bg-start), var(--hero-bg-end));
-            border-bottom: 1px solid var(--card-border);
             text-align: center;
+            display: block;
         }
         
-        .blog-meta-line {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            font-size: 0.85rem;
-            color: var(--text-color);
-            opacity: 0.7;
-            margin-bottom: 1.25rem;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-        }
-        
-        .meta-separator {
-            opacity: 0.4;
-            font-size: 0.7rem;
-        }
-        
-        .blog-category {
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-        }
-        
+        /* Title is the hero - nothing else in this section */
         .blog-header h1 {
-            font-size: 2.4rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.25;
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 3rem;
+            margin: 0;
+            line-height: 1.15;
             color: var(--heading-color);
             font-weight: 700;
-            max-width: 700px;
+            letter-spacing: -0.02em;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
         
+        /* Metadata Bar - Completely separate section below header */
+        .blog-meta-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            padding: 1.25rem 2rem;
+            background-color: var(--quote-bg);
+            border-bottom: 1px solid var(--card-border);
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .blog-date {
+            font-weight: 500;
+            opacity: 0.7;
+        }
+        
+        .meta-separator {
+            width: 4px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        
+        .blog-category {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .blog-reading-time {
+            opacity: 0.6;
+            font-style: italic;
+        }
+        
+        /* Tags - Separate row within the meta bar */
         .blog-tags {
             display: flex;
-            gap: 0.6rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
             justify-content: center;
+            padding: 1rem 2rem 1.25rem;
+            background-color: var(--quote-bg);
+            border-bottom: 1px solid var(--card-border);
         }
         
         .blog-tags .tag {
-            padding: 0.4rem 1rem;
-            background-color: var(--accent-color);
-            color: white;
-            border-radius: 2rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.01em;
+            padding: 0.35rem 0.75rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--card-border);
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 0.8;
         }
         
-        /* Blog Content Wrapper */
+        /* ============================================
+           BLOG CONTENT - RICH TYPOGRAPHY
+           ============================================ */
+        
         .blog-content-wrapper {
-            padding: 3rem 3.5rem 3.5rem;
+            padding: 3.5rem 4rem 4rem;
         }
         
         .blog-content {
-            line-height: 1.9;
-            font-size: 1.1rem;
+            font-family: 'Crimson Pro', Georgia, serif;
+            line-height: 1.85;
+            font-size: 1.2rem;
             color: var(--text-color);
+            max-width: 100%;
         }
         
         /* Hide duplicate title from markdown */
@@ -1360,62 +1396,72 @@
             display: none;
         }
         
-        /* === HEADING STYLES - Make them distinct === */
+        /* === HEADING HIERARCHY - Clear visual distinction === */
+        
         .blog-content h1 {
             font-family: 'Crimson Pro', Georgia, serif;
-            font-size: 2.2rem;
-            margin-top: 3.5rem;
-            margin-bottom: 1.25rem;
+            font-size: 2.4rem;
+            margin-top: 4rem;
+            margin-bottom: 1.5rem;
             color: var(--heading-color);
             font-weight: 700;
             letter-spacing: -0.02em;
-            line-height: 1.3;
+            line-height: 1.2;
         }
         
         .blog-content h2 {
             font-family: 'Crimson Pro', Georgia, serif;
-            font-size: 1.75rem;
-            margin-top: 3rem;
-            margin-bottom: 1rem;
+            font-size: 1.9rem;
+            margin-top: 3.5rem;
+            margin-bottom: 1.25rem;
             color: var(--heading-color);
             font-weight: 600;
-            padding-bottom: 0.6rem;
-            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-color);
             letter-spacing: -0.01em;
-            line-height: 1.35;
+            line-height: 1.3;
         }
         
         .blog-content h3 {
             font-family: 'Inter', system-ui, sans-serif;
-            font-size: 1.35rem;
-            margin-top: 2.5rem;
-            margin-bottom: 0.85rem;
+            font-size: 1.4rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
             color: var(--heading-color);
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: -0.01em;
-            line-height: 1.4;
+            line-height: 1.35;
         }
         
         .blog-content h4 {
             font-family: 'Inter', system-ui, sans-serif;
-            font-size: 1.15rem;
-            margin-top: 2rem;
+            font-size: 1rem;
+            margin-top: 2.5rem;
             margin-bottom: 0.75rem;
-            color: var(--heading-color);
-            font-weight: 600;
+            color: var(--accent-color);
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
-            font-size: 0.95rem;
+            letter-spacing: 0.08em;
         }
         
-        /* === BODY TEXT STYLES === */
+        /* === PARAGRAPHS - Comfortable reading === */
+        
         .blog-content p {
-            margin-bottom: 1.6rem;
+            margin-bottom: 1.75rem;
+            text-align: left;
         }
+        
+        /* First paragraph after heading - no indent, slight emphasis */
+        .blog-content h2 + p,
+        .blog-content h3 + p {
+            font-size: 1.25rem;
+        }
+        
+        /* === EMPHASIS STYLES === */
         
         .blog-content strong {
             color: var(--heading-color);
-            font-weight: 600;
+            font-weight: 700;
         }
         
         .blog-content em {
@@ -1423,71 +1469,129 @@
             color: inherit;
         }
         
-        .blog-content ul, .blog-content ol {
-            margin-bottom: 1.6rem;
-            padding-left: 1.75rem;
+        .blog-content strong em,
+        .blog-content em strong {
+            font-weight: 700;
+            font-style: italic;
+        }
+        
+        /* === LISTS - Clean and readable === */
+        
+        .blog-content ul,
+        .blog-content ol {
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
         }
         
         .blog-content ul {
-            list-style-type: disc;
+            list-style-type: none;
+        }
+        
+        .blog-content ul li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+        
+        .blog-content ul li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: 600;
         }
         
         .blog-content ol {
             list-style-type: decimal;
+            padding-left: 1.75rem;
         }
         
-        .blog-content li {
-            margin-bottom: 0.6rem;
+        .blog-content ol li {
+            margin-bottom: 0.75rem;
             line-height: 1.7;
+            padding-left: 0.5rem;
         }
         
-        .blog-content li::marker {
+        .blog-content ol li::marker {
             color: var(--accent-color);
+            font-weight: 700;
         }
         
-        /* === BLOCKQUOTES === */
+        /* Nested lists */
+        .blog-content ul ul,
+        .blog-content ol ol,
+        .blog-content ul ol,
+        .blog-content ol ul {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* === BLOCKQUOTES - Distinctive and elegant === */
+        
         .blog-content blockquote {
-            margin: 2rem 0;
-            padding: 1.5rem 2rem;
+            margin: 2.5rem 0;
+            padding: 1.75rem 2rem 1.75rem 2.5rem;
             border-left: 4px solid var(--accent-color);
-            background-color: var(--quote-bg);
+            background: linear-gradient(135deg, var(--quote-bg), transparent);
             border-radius: 0 0.75rem 0.75rem 0;
             font-style: italic;
             color: var(--text-color);
-            font-size: 1.05rem;
+            font-size: 1.15rem;
+            position: relative;
+        }
+        
+        .blog-content blockquote::before {
+            content: '"';
+            position: absolute;
+            left: 0.75rem;
+            top: 0.5rem;
+            font-size: 3rem;
+            color: var(--accent-color);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .blog-content blockquote p {
+            margin-bottom: 0;
         }
         
         .blog-content blockquote p:last-child {
             margin-bottom: 0;
         }
         
-        /* === HORIZONTAL RULES === */
+        /* === HORIZONTAL RULES - Section breaks === */
+        
         .blog-content hr {
-            margin: 3.5rem 0;
+            margin: 4rem auto;
             border: none;
-            height: 1px;
+            width: 30%;
+            height: 3px;
             background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-            opacity: 0.4;
+            opacity: 0.5;
         }
         
-        /* === LINKS IN CONTENT === */
+        /* === LINKS - Clearly clickable === */
+        
         .blog-content a {
             color: var(--accent-color);
-            text-decoration: underline;
-            text-decoration-color: var(--accent-color);
-            text-underline-offset: 2px;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
             transition: all 0.2s ease;
+            font-weight: 500;
         }
         
         .blog-content a:hover {
             color: var(--accent-hover);
-            text-decoration-color: var(--accent-hover);
+            border-bottom-color: var(--accent-hover);
         }
         
-        /* Code styling */
+        /* === CODE - Technical content === */
+        
         .blog-content code {
             font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-            font-size: 0.88em;
+            font-size: 0.85em;
             background-color: var(--nav-bg);
             padding: 0.2em 0.5em;
             border-radius: 0.3rem;
@@ -1496,13 +1600,13 @@
         }
         
         .blog-content pre {
-            margin: 2rem 0;
-            padding: 1.5rem;
+            margin: 2.5rem 0;
+            padding: 1.75rem;
             background-color: #1e293b;
             border-radius: 0.75rem;
             overflow-x: auto;
             border: 1px solid #334155;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
         
         .blog-content pre code {
@@ -1514,7 +1618,69 @@
             font-weight: 400;
         }
         
-        /* === THEME VARIATIONS === */
+        /* === TABLES - Data presentation === */
+        
+        .blog-content table {
+            width: 100%;
+            margin: 2.5rem 0;
+            border-collapse: collapse;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 0.95rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 12px var(--card-shadow);
+        }
+        
+        .blog-content th,
+        .blog-content td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .blog-content th {
+            background-color: var(--nav-bg);
+            font-weight: 700;
+            color: var(--heading-color);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .blog-content tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .blog-content tr:hover td {
+            background-color: var(--quote-bg);
+        }
+        
+        /* === IMAGES - Visual content === */
+        
+        .blog-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 8px 30px var(--card-shadow);
+        }
+        
+        .blog-content figure {
+            margin: 2.5rem 0;
+        }
+        
+        .blog-content figcaption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+        
+        /* ============================================
+           THEME VARIATIONS
+           ============================================ */
         
         /* Before-midnight theme */
         .before-midnight .blog-content pre {
@@ -1534,6 +1700,10 @@
             background: linear-gradient(135deg, #1e3a5f, #0d1b2a);
         }
         
+        .before-midnight .blog-meta-line {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
         .before-midnight .blog-content h1,
         .before-midnight .blog-content h2,
         .before-midnight .blog-content h3 {
@@ -1545,8 +1715,8 @@
         }
         
         .before-midnight .blog-tags .tag {
-            background-color: #4fc3f7;
-            color: #0d1b2a;
+            background-color: rgba(79, 195, 247, 0.2);
+            color: #4fc3f7;
         }
         
         /* Before-sunset theme */
@@ -1556,7 +1726,8 @@
         }
         
         .before-sunset .blog-tags .tag {
-            background-color: #f97316;
+            background-color: rgba(249, 115, 22, 0.15);
+            color: #ea580c;
         }
         
         .before-sunset .blog-content h1,
@@ -1569,9 +1740,12 @@
             border-bottom-color: #ff6f00;
         }
         
-        /* Mermaid diagrams */
+        /* ============================================
+           MERMAID DIAGRAMS
+           ============================================ */
+        
         .mermaid-diagram {
-            margin: 2.5rem 0;
+            margin: 3rem 0;
             padding: 2rem;
             background-color: var(--quote-bg);
             border-radius: 0.75rem;
@@ -1585,7 +1759,6 @@
             height: auto;
         }
         
-        /* Theme-specific mermaid styling */
         .before-sunrise .mermaid-diagram {
             background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
             border-color: #e0f2fe;
@@ -1617,45 +1790,9 @@
             color: #fca5a5;
         }
         
-        /* Table styling */
-        .blog-content table {
-            width: 100%;
-            margin: 2rem 0;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 2px 8px var(--card-shadow);
-        }
-        
-        .blog-content th, .blog-content td {
-            padding: 0.9rem 1.1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--card-border);
-        }
-        
-        .blog-content th {
-            background-color: var(--nav-bg);
-            font-weight: 600;
-            color: var(--heading-color);
-        }
-        
-        .blog-content tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .blog-content tr:hover td {
-            background-color: var(--quote-bg);
-        }
-        
-        /* Image styling */
-        .blog-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 0.75rem;
-            margin: 2rem 0;
-            box-shadow: 0 8px 24px var(--card-shadow);
-        }
+        /* ============================================
+           BLOG NAVIGATION
+           ============================================ */
         
         .blog-navigation {
             padding: 2rem 3rem;
@@ -1690,30 +1827,42 @@
             margin: 1.5rem 0;
         }
         
-        /* Responsive blog styling */
+        /* ============================================
+           RESPONSIVE STYLES
+           ============================================ */
+        
         @media (max-width: 768px) {
             .blog-header {
-                padding: 2rem 1.5rem 1.5rem;
+                padding: 2.5rem 1.5rem 2rem;
             }
             
             .blog-header h1 {
-                font-size: 1.75rem;
-            }
-            
-            .blog-content-wrapper {
-                padding: 1.5rem;
-            }
-            
-            .blog-content {
-                font-size: 1rem;
-            }
-            
-            .blog-navigation {
-                padding: 1.5rem;
+                font-size: 2rem;
             }
             
             .blog-meta-line {
                 flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .blog-content-wrapper {
+                padding: 2rem 1.5rem;
+            }
+            
+            .blog-content {
+                font-size: 1.1rem;
+            }
+            
+            .blog-content h2 {
+                font-size: 1.6rem;
+            }
+            
+            .blog-content h3 {
+                font-size: 1.25rem;
+            }
+            
+            .blog-navigation {
+                padding: 1.5rem;
             }
         }
         
