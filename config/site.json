@@ -14,122 +14,93 @@
   ],
   "projects": [
     {
-      "slug": "attention-entropy",
-      "title": "Attention Entropy Optimization",
-      "subtitle": "Enhancing reasoning in small language models through novel decoding strategies",
-      "description": "Research on improving reasoning capabilities in small language models (0.5B-3B parameters) through novel decoding strategies.",
-      "date": "2024-12",
-      "tags": ["Machine Learning", "NLP", "Research", "Python"],
-      "tech_stack": "PyTorch, Transformers, Python, CUDA",
+      "slug": "poor-mans-rekognition",
+      "title": "Poor Man's Rekognition",
+      "subtitle": "Open source alternative to AWS Rekognition",
+      "description": "Built an open-source alternative to Amazon's Rekognition service during Google Summer of Code. Scene text detection with TextBoxes++, text recognition with CRNN, scene classification with EfficientNet B7, object detection with YOLOv3, and face detection with RetinaFace. All models served via TensorFlow Serving with Django REST APIs.",
+      "date": "2020-08",
+      "tags": ["Computer Vision", "Deep Learning", "Open Source"],
+      "tech_stack": "Python, TensorFlow, TensorFlow Serving, Django, Docker, Travis CI",
       "duration": "3 months",
-      "role": "Lead Researcher",
+      "role": "GSoC Student Developer",
       "featured": true,
-      "featured_image": "/assets/images/projects/attention-entropy.png",
-      "github_url": "https://github.com/PulkitMishra/attention-entropy",
+      "github_url": "https://github.com/CCExtractor/Rekognern",
       "key_achievements": [
-        "15% improvement in reasoning accuracy",
-        "Reduced inference time by 20%",
-        "Research paper in review"
+        "TextBoxes++ for multi-oriented scene text",
+        "CRNN trained on synth90k for text recognition",
+        "Full REST API with Docker deployment"
       ],
-      "content_file": "attention-entropy.md"
+      "content_file": "poor-mans-rekognition.md"
     },
     {
-      "slug": "multi-stream-video",
-      "title": "Multi-stream Video Analytics",
-      "subtitle": "Scalable system for real-time video processing",
-      "description": "Scalable system processing 32 concurrent video streams per GPU for safety monitoring applications.",
-      "date": "2024-10",
-      "tags": ["Computer Vision", "Distributed Systems", "Python", "Docker"],
-      "tech_stack": "OpenCV, FastAPI, Docker, Kubernetes",
-      "duration": "4 months",
-      "role": "System Architect",
-      "featured": true,
-      "featured_image": "/assets/images/projects/multi-stream.png",
-      "demo_url": "https://demo.pulkitmishra.dev/multi-stream",
-      "key_achievements": [
-        "99.5% uptime in production",
-        "32x parallel processing capability",
-        "50% cost reduction vs existing solutions"
-      ],
-      "content_file": "multi-stream-video.md"
-    },
-    {
-      "slug": "efficient-gcn",
-      "title": "EfficientGCN Adaptation",
-      "subtitle": "Lightweight human activity recognition for edge devices",
-      "description": "Lightweight human activity recognition model (0.19MB) adapted for real-time performance on edge devices.",
-      "date": "2024-08",
-      "tags": ["Deep Learning", "Edge Computing", "Optimization"],
-      "tech_stack": "PyTorch, TensorRT, ONNX",
-      "duration": "2 months",
-      "role": "ML Engineer",
+      "slug": "hikemoji-3d-avatar",
+      "title": "Real-time 3D Avatar Generation",
+      "subtitle": "Generating 3D Hikemoji from human faces in the browser",
+      "description": "Built real-time 3D avatar generation system at Hike Messenger. Used TensorFlow.js and Facemesh to generate 3D head mesh, Position Map Regression for texture processing, BiSeNet for face segmentation, and BabylonJS for rendering. Runs entirely in browser with custom asset support.",
+      "date": "2020-11",
+      "tags": ["3D Vision", "TensorFlow.js", "WebGL"],
+      "tech_stack": "JavaScript, TensorFlow.js, BabylonJS, WebGL, Facemesh",
+      "duration": "7 months",
+      "role": "ML Intern",
       "featured": true,
       "key_achievements": [
-        "0.19MB model size",
-        "Real-time inference on mobile",
-        "95% accuracy maintained"
+        "Real-time browser-based 3D generation",
+        "BiSeNet face segmentation integration",
+        "Custom asset system (hair, caps, accessories)"
       ],
-      "content_file": "efficient-gcn.md"
-    },
-    {
-      "slug": "mlops-infrastructure",
-      "title": "MLOps Infrastructure",
-      "subtitle": "End-to-end ML pipeline on Kubernetes",
-      "description": "End-to-end MLOps implementation on Kubernetes using Seldon, Docker, and Azure CI/CD pipelines.",
-      "date": "2024-06",
-      "tags": ["MLOps", "Kubernetes", "CI/CD", "Infrastructure"],
-      "tech_stack": "Kubernetes, Seldon Core, Docker, Azure DevOps",
-      "duration": "3 months",
-      "role": "DevOps Engineer",
-      "featured": true,
-      "github_url": "https://github.com/PulkitMishra/mlops-k8s",
-      "key_achievements": [
-        "Automated model deployment",
-        "A/B testing framework",
-        "Model monitoring & rollback"
-      ],
-      "content_file": "mlops-infrastructure.md"
+      "content_file": "hikemoji-avatar.md"
     }
   ],
   "blog_posts": [
     {
-      "slug": "small-llm-reasoning",
-      "title": "Unlocking Reasoning in Sub-3B Parameter LLMs",
-      "description": "An exploration of techniques to enhance logical capabilities in small language models without increasing model size.",
+      "slug": "teaching-machines-to-notice",
+      "title": "Teaching Machines to Notice",
+      "description": "Jamnagar. Miles of pipe, thousands of workers, and cameras that never blink. Building real-time safety systems with DeepStream pipelines and graph neural networks.",
       "date": "2025-03-15",
       "category": "technical",
-      "tags": ["LLM", "Research", "Optimization"],
-      "reading_time": "8 min",
+      "tags": ["Computer Vision", "DeepStream", "Edge AI"],
+      "reading_time": "15 min",
       "featured": true,
-      "content_file": "small-llm-reasoning.md"
+      "content_file": "teaching-machines-to-notice.md"
     },
     {
-      "slug": "ml-systems-at-scale",
-      "title": "Architecting ML Systems at Scale: Lessons from Google Pay",
-      "description": "Key insights on building robust, scalable machine learning infrastructure in production environments.",
-      "date": "2025-03-01",
+      "slug": "slow-paths-fast-hands",
+      "title": "Slow Paths, Fast Hands",
+      "description": "What happens when you point a neural network at cricket footage with no labels. Generating training data from thin air, teaching SlowFast to see batting strokes, and the surprising gap between model accuracy and what actually matters.",
+      "date": "2025-02-20",
       "category": "technical",
-      "tags": ["MLOps", "Infrastructure", "Scale"],
+      "tags": ["Action Recognition", "Sports Analytics", "SlowFast"],
       "reading_time": "12 min",
       "featured": true,
-      "content_file": "ml-systems-at-scale.md"
+      "content_file": "slow-paths-fast-hands.md"
     },
     {
-      "slug": "before-sunrise-ai",
-      "title": "Before Sunrise: Conversations with AI",
+      "slug": "tools-of-the-trade",
+      "title": "Tools of the Trade",
+      "description": "Over three years of MLOps lessons. From LabelStudio forks to Triton deployments, Argo workflows to Helm charts. What worked, what didn't, and the hard-won opinions I've formed about building ML systems in production.",
+      "date": "2025-01-30",
+      "category": "technical",
+      "tags": ["MLOps", "Infrastructure", "Deployment"],
+      "reading_time": "18 min",
+      "featured": false,
+      "content_file": "tools-of-the-trade.md"
+    },
+    {
+      "slug": "before-singularity",
+      "title": "Before Singularity",
       "description": "Reflections on the parallels between Linklater's intimate dialogue and our evolving interactions with artificial intelligence.",
-      "date": "2025-02-20",
+      "date": "2025-01-15",
       "category": "reflections",
       "tags": ["Philosophy", "AI", "Culture"],
       "reading_time": "6 min",
       "featured": true,
-      "content_file": "before-sunrise-ai.md"
+      "content_file": "before-singularity.md"
     },
     {
       "slug": "digital-alchemy",
       "title": "Digital Alchemy: From FMA to ML",
       "description": "How the philosophical themes of Fullmetal Alchemist mirror our modern pursuit of artificial intelligence.",
-      "date": "2025-01-30",
+      "date": "2025-01-01",
       "category": "reflections",
       "tags": ["Philosophy", "Machine Learning", "Anime"],
       "reading_time": "10 min",
