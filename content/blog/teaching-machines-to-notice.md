@@ -16,7 +16,7 @@ These aren't abstract users. **They're people with families waiting for them. Th
 
 ## The Problem
 
-The scope was broad: PPE compliance (helmet, vest, goggles), fire and smoke detection, restricted region monitoring, spillage detection, safety shower verification. RTSP streams in, RTSP streams out with results overlaid in real-time. Alerts fired immediately and persisted to a database for later analysis.
+The scope was broad: PPE compliance (helmet, gloves, boots, IFR suit), fire and smoke detection, restricted region monitoring, spillage detection, safety shower verification. RTSP streams in, RTSP streams out with results overlaid in real-time. Alerts fired immediately and persisted to a database for later analysis.
 
 The existing system, built by an earlier team, only handled PPE. And it handled it poorly.
 
@@ -25,13 +25,14 @@ The existing system, built by an earlier team, only handled PPE. And it handled 
 Each PPE check had its own model:
 - **Gloves:** one neural network
 - **Helmet:** another neural network
-- **Goggles:** third neural network
+- **Boots:** third neural network
+- **IFR Suit:** fourth neural network
 
-Three separate backbones extracting features from identical pixels, burning three times the compute for no good reason. You could share a single backbone and branch into separate classification heads, cutting redundant computation significantly.
+Four separate backbones extracting features from identical pixels, burning four times the compute for no good reason. You could share a single backbone and branch into separate classification heads, cutting redundant computation significantly.
 
 The models themselves were NVIDIA's TAO pretrained models, things like PeopleNet and TrafficCamNet. Convenient for getting started with DeepStream, but consistently underperforming compared to well-tuned open source alternatives like YOLOv8.
 
-We replaced it with a two-stage approach: person detection first (full body, grounded to floor), then classification on crops. Each class gets its own regression head, adding spatial context about where on the body the equipment should appear. We fine-tuned YOLOv8 small and nano variants on our data.
+We replaced the entire approach with a two-stage pipeline: detect people first, then classify PPE on each person crop. This grounds every detection to a person—you can't have a phantom helmet floating in the air. We fine-tuned YOLOv8 small and nano variants on refinery-specific data.
 
 ### The Architecture Problem
 
@@ -76,66 +77,125 @@ Why DeepStream matters:
 - **Optimized inference** via TensorRT (models converted to `.engine` format)
 - **Zero-copy GPU memory:** the main performance win. No CPU↔GPU transfers between pipeline stages. Data stays on device.
 
-The programming model: you construct a pipeline by connecting elements via pads. Source pads (outputs) connect to sink pads (inputs) of downstream elements. Each element can have properties you configure. Probes are Python or C++ functions that act as hooks, letting you access and modify metadata as it flows through.
-
-The pipeline abstraction means you can compose complex applications from simple building blocks:
-1. A *source element* reads an RTSP stream
-2. A *decoder element* converts H.264 to raw frames
-3. An *inference element* runs a neural network
-4. A *tracker element* maintains object identity across frames
-5. A *sink element* writes results to file or streams them out
+The programming model: you construct a pipeline by connecting elements via pads. Each element has a source pad (input) and a sink pad (output). Data flows through: an upstream element's sink pad connects to the downstream element's source pad. Each element can have properties you configure. Probes are Python or C++ functions that act as hooks, letting you access and modify metadata as it flows through.
 
 ```mermaid
 flowchart LR
     subgraph Element1["Element A"]
+        SRC1[Source Pad<br/>Input]
         E1[Processing]
-        SRC1[Source Pad]
+        SINK1[Sink Pad<br/>Output]
     end
     
     subgraph Element2["Element B"]
-        SINK2[Sink Pad]
+        SRC2[Source Pad<br/>Input]
         E2[Processing]
-        SRC2[Source Pad]
+        SINK2[Sink Pad<br/>Output]
     end
     
     subgraph Element3["Element C"]
-        SINK3[Sink Pad]
+        SRC3[Source Pad<br/>Input]
         E3[Processing]
+        SINK3[Sink Pad<br/>Output]
     end
     
-    SRC1 --> SINK2
-    SRC2 --> SINK3
+    SINK1 --> SRC2
+    SINK2 --> SRC3
     
     style SRC1 fill:#4ecdc4
     style SRC2 fill:#4ecdc4
+    style SRC3 fill:#4ecdc4
+    style SINK1 fill:#ff6b6b
     style SINK2 fill:#ff6b6b
     style SINK3 fill:#ff6b6b
 ```
+
+DeepStream uses a two-tier inference model:
+- **PGIE (Primary GPU Inference Engine):** The first-stage model that runs on full frames. Typically a person or object detector.
+- **SGIE (Secondary GPU Inference Engine):** Runs after PGIE—either on cropped regions from PGIE detections or on features extracted by PGIE. Used for classification, attribute recognition, or fine-grained analysis.
+
+This separation is fundamental to how we structured the PPE pipeline.
+
+The pipeline abstraction means you can compose complex applications from simple building blocks:
+1. A *source element* reads an RTSP stream
+2. A *decoder element* converts H.264 to raw frames
+3. A *PGIE element* runs the primary neural network
+4. A *tracker element* maintains object identity across frames
+5. An *SGIE element* runs secondary classification on detected objects
+6. A *sink element* writes results to file or streams them out
 
 The previous team wasn't exploiting any of this. One camera, one process. Ferrari delivering groceries.
 
 ---
 
-## The Team
-
-Team of five:
-- **Three data scientists** handling almost all modeling work
-- **One backend developer** building v2 as a generic product on the side
-- **Me:** one model, all DeepStream applications across all models, all deployments, maintaining the existing backend, MLOps and ML infrastructure, removing inefficiencies end-to-end, contributing to v2 design
-
-The detection models I largely left to colleagues. I'd spent college and internships fine-tuning YOLOs and BERTs. The rhythm becomes meditative after enough iterations: data collection, labeling, hyperparameter sweeps, training, evaluation, repeat. Good work but I'd done enough of it.
-
-The DeepStream work and the GCN model training was where things got interesting.
-
----
-
 ## The Fixes
+
+I'd spent college and internships fine-tuning YOLOs and BERTs. The rhythm becomes meditative after enough iterations: data collection, labeling, hyperparameter sweeps, training, evaluation, repeat. Good work, but I'd done enough of it. I left most of the detection model work to colleagues. The DeepStream pipeline architecture and fall detection model were more interesting to me—and that's what this post focuses on. PPE serves as the running example. Fire, smoke, spillage, and the other detection modes followed similar patterns.
+
+### Two-Stage PPE Detection
+
+The old system detected PPE items directly in the frame. This caused two problems: small objects (gloves, boots) were hard to detect at typical camera distances, and false positives appeared everywhere—the model would hallucinate helmets on lamp posts or gloves on valve handles.
+
+The fix was grounding: every PPE detection must belong to a person.
+
+```mermaid
+flowchart TB
+    subgraph Stage1["Stage 1: Person Detection (PGIE)"]
+        FRAME[Full Frame] --> YOLO1[YOLOv8]
+        YOLO1 --> P1[Person 1<br/>Bounding Box]
+        YOLO1 --> P2[Person 2<br/>Bounding Box]
+        YOLO1 --> P3[Person 3<br/>Bounding Box]
+    end
+    
+    subgraph Stage2["Stage 2: PPE Detection (SGIE)"]
+        P1 --> CROP1[Crop 1]
+        P2 --> CROP2[Crop 2]
+        P3 --> CROP3[Crop 3]
+        
+        CROP1 --> MODEL[Multi-Head Model]
+        CROP2 --> MODEL
+        CROP3 --> MODEL
+        
+        subgraph Heads["Per-Class Heads"]
+            MODEL --> HH[Helmet Head]
+            MODEL --> GH[Gloves Head]
+            MODEL --> BH[Boots Head]
+            MODEL --> VH[IFR Suit Head]
+            
+            HH --> HC[Class ✓/✗]
+            HH --> HB[BBox]
+            GH --> GC[Class ✓/✗]
+            GH --> GB[BBox]
+            BH --> BC[Class ✓/✗]
+            BH --> BB[BBox]
+            VH --> VC[Class ✓/✗]
+            VH --> VB[BBox]
+        end
+    end
+    
+    style FRAME fill:#45b7d1
+    style MODEL fill:#4ecdc4
+    style HH fill:#96ceb4
+    style GH fill:#96ceb4
+    style BH fill:#96ceb4
+    style VH fill:#96ceb4
+```
+
+**Stage 1 (PGIE):** A YOLOv8 model detects people in the full frame, outputting bounding boxes.
+
+**Stage 2 (SGIE):** Each person crop is passed to a multi-head model. For each PPE class (helmet, gloves, boots, IFR suit), there's a dedicated head with two outputs:
+- **Classification head:** binary yes/no for presence
+- **Regression head:** bounding box coordinates for the PPE item within the crop
+
+The regression heads aren't used at inference time—you just need the classification outputs to know if each PPE component is present or not. But during training, predicting bounding box locations forces the model to learn spatial priors: a helmet can only appear at the top of the crop, gloves near the edges at arm-height, boots at the bottom. This auxiliary task makes the classifier more robust.
+
+The grounding constraint is simple but powerful: no person, no PPE detection. A hard hat sitting on a shelf doesn't trigger an alert. A glove on a railing is ignored. Only PPE—or its absence—on actual workers matters.
 
 ### Batching
 
-A DeepStream pipeline follows GStreamer's model of elements connected by pads. Each element has source pads (outputs) and sink pads (inputs). Data flows from source to sink through links.
+A DeepStream pipeline follows GStreamer's model of elements connected by pads. Each element has source pads (inputs) and sink pads (outputs). Data flows from sink to source through links.
 
-The `nvstreammux` element has multiple sink pads (one per input source) and a single source pad that outputs batched frames. On the other end, `nvstreamdemux` takes batched data and splits it back to individual streams.
+The `nvstreammux` element has multiple source pads (one per input source) and a single sink pad that outputs batched frames. On the other end, `nvstreamdemux` takes batched data and splits it back to individual streams.
 
 ```mermaid
 flowchart LR
@@ -163,9 +223,10 @@ flowchart LR
     D3 --> MUX
     D4 --> MUX
     
-    MUX --> INF[nvinfer<br/>Single batched<br/>GPU call]
-    INF --> TRACK[nvtracker]
-    TRACK --> DEMUX[nvstreamdemux]
+    MUX --> PGIE[PGIE<br/>Person Detection]
+    PGIE --> TRACK[nvtracker]
+    TRACK --> SGIE[SGIE<br/>PPE Detection]
+    SGIE --> DEMUX[nvstreamdemux]
     
     DEMUX --> S1[Sink 1]
     DEMUX --> S2[Sink 2]
@@ -173,11 +234,12 @@ flowchart LR
     DEMUX --> S4[Sink 4]
     
     style MUX fill:#4ecdc4
-    style INF fill:#45b7d1
+    style PGIE fill:#45b7d1
+    style SGIE fill:#45b7d1
     style TRACK fill:#96ceb4
 ```
 
-With this architecture, **one pipeline handles eight cameras**. The `nvinfer` element receives a batch of eight frames and runs inference on all of them in a single GPU kernel launch. Memory transfer overhead happens once per batch, not once per frame. The GPU stays saturated. Memory bandwidth is amortized across the batch.
+With this architecture, **one pipeline handles eight cameras**. The PGIE element receives a batch of eight frames and runs inference on all of them in a single GPU kernel launch. Memory transfer overhead happens once per batch, not once per frame. The GPU stays saturated. Memory bandwidth is amortized across the batch.
 
 ### Intelligent Tracking
 
@@ -191,18 +253,18 @@ DeepStream's `Gst-nvtracker` element supports multiple backends:
 - **NvDeepSORT:** with appearance features
 - **NvDCF:** discriminative correlation filters
 
-We used NvDCF, which maintains a discriminative correlation filter model per tracked object and updates it online as new detections arrive. The tracker receives detection results every N frames (we used N=20) and produces bounding box predictions for every frame in between. Secondary inference (SGIE) only runs on detection frames, not tracked frames.
+We used NvDCF, which maintains a discriminative correlation filter model per tracked object and updates it online as new detections arrive. The tracker receives detection results every N frames (we used N=20) and produces bounding box predictions for every frame in between. SGIE only runs on detection frames, not tracked frames.
 
 ```mermaid
 sequenceDiagram
     participant F as Frames
-    participant D as Detector
+    participant D as PGIE (Detector)
     participant T as Tracker
-    participant S as Classifier
+    participant S as SGIE (PPE Detection)
     
     F->>D: Frame 1
     D->>T: Detections
-    T->>S: Classify
+    T->>S: Detect PPE on crops
     
     F->>T: Frame 2-20
     T-->>T: Predict positions
@@ -210,16 +272,18 @@ sequenceDiagram
     
     F->>D: Frame 21
     D->>T: Fresh detections
-    T->>S: Classify
+    T->>S: Detect PPE on crops
 ```
 
 This gave us more than just performance gains. Without tracking, the same person walking across frame would trigger separate PPE violation alerts for each detection, potentially dozens of alerts for a single event. With tracking, we assign a persistent ID to each person. Alert logic becomes "person 47 has been in violation for 30 seconds" rather than "900 separate violations detected."
+
+This persistent identity also enabled smarter alerting. Early versions flagged workers removing helmets momentarily to wipe sweat—technically a violation, but not one worth interrupting the control room for. We added temporal persistence: a violation must persist for 30 seconds before triggering an alert. Simple post-processing rule, dramatic reduction in false positives.
 
 **With tracking enabled, we pushed from 8 to 32 concurrent camera streams per pipeline** while maintaining acceptable latency.
 
 ### Hot-Swapping Cameras
 
-GStreamer pipelines are technically dynamic. You can add and remove elements at runtime. But the plumbing is fiddly. Adding a new source to an already-running pipeline means creating the source element, creating a new sink pad on `nvstreammux`, linking them, and setting the element to PLAYING state. All while the rest of the pipeline continues processing. Get the state transitions wrong, you deadlock. Get the pad linking wrong, you leak memory or crash.
+GStreamer pipelines are technically dynamic. You can add and remove elements at runtime. But the plumbing is fiddly. Adding a new source to an already-running pipeline means creating the source element, creating a new source pad on `nvstreammux`, linking them, and setting the element to PLAYING state. All while the rest of the pipeline continues processing. Get the state transitions wrong, you deadlock. Get the pad linking wrong, you leak memory or crash.
 
 The previous system gave up on this entirely. Adding a camera meant stopping the pod and restarting with a new configuration. That meant several minutes of downtime.
 
@@ -227,26 +291,33 @@ The previous system gave up on this entirely. Adding a camera meant stopping the
 
 You cannot add or delete pads at runtime without stopping the pipeline. But you can create them all upfront.
 
-We profiled the pipeline on a T4 GPU (our production inference hardware) to find the sweet spot: maximum GPU utilization without exceeding memory limits or pushing latency past our threshold. The answer was thirty two streams per pipeline.
+We profiled the pipeline on a T4 GPU (our production inference hardware) to find the sweet spot: maximum GPU utilization without exceeding memory limits or pushing latency past our threshold. The answer was thirty-two streams per pipeline.
 
 So at startup:
 
-1. Create thirty two sink pads on `nvstreammux`
-2. Link all to placeholder elements
+1. Create thirty-two source pads on `nvstreammux`
+2. Link all to placeholder sources (`fakesrc` elements producing black frames)
 3. When a camera needs to be added, swap the placeholder with a real RTSP source
 4. When a camera needs to be removed, swap back to placeholder
 
-Think of it like tubes existing within the pipeline. You're just slotting cameras into tubes or pulling them out. The topology never changes.
+Swapping works like this:
+1. Pause the slot
+2. Unlink `fakesrc` from the mux source pad
+3. Create new `uridecodebin` with the RTSP URI
+4. Link new source to the *same* source pad (the pad persists)
+5. Set new source to PLAYING
+
+The mux's source pads never change—only the upstream elements get swapped. Think of it like tubes existing within the pipeline. You're just slotting cameras into tubes or pulling them out. The topology never changes.
 
 ```mermaid
 flowchart TB
-    subgraph Slots["Pre-created Sink Pads"]
+    subgraph Slots["Pre-created Source Pads"]
         S1[Slot 1: Camera A]
         S2[Slot 2: Camera B]
-        S3[Slot 3: Empty]
+        S3[Slot 3: Empty<br/>fakesrc]
         S4[Slot 4: Camera C]
-        S5[Slot 5: Empty]
-        S6[Slot 6: Empty]
+        S5[Slot 5: Empty<br/>fakesrc]
+        S6[Slot 6: Empty<br/>fakesrc]
     end
     
     S1 --> MUX[nvstreammux]
@@ -272,12 +343,25 @@ A polling mechanism checks a Kubernetes ConfigMap every few seconds. If a pod al
 
 ### Custom Model Integration
 
-Here's the catch with batching: DeepStream's `nvinfer` element only natively supports certain models, mostly NVIDIA's in-house ones like PeopleNet. To make fine-tuned open source models work, you need custom post-processing.
+Here's the catch with using DeepStream: you get hardware acceleration, optimized memory flow, and production-ready infrastructure out of the box. But the framework expects NVIDIA's models. Custom models—fine-tuned YOLOs, our EfficientGCN—have different input formats, different output tensor shapes, different preprocessing and postprocessing requirements.
 
-The solution: write a C++ shared library (`.so` file) with a function that serves as an entry point. You specify the library path and function name in `nvinfer`'s properties. The function gets called right after inference completes, receiving the output buffer. It parses raw tensor outputs however needed and attaches results to DeepStream's metadata structures.
+DeepStream's `nvinfer` element has a plugin system for this. You write a C++ shared library (`.so` file) that handles the mismatch between what DeepStream provides and what your model expects.
+
+**Preprocessing:** DeepStream sends data in its native format (NvBufSurface, NHWC layout, specific color spaces). Your model might expect different normalization, different tensor layouts, different resolutions. One example: some models expect a depth channel, but DeepStream doesn't natively support depth—you'd need to handle that in the preprocessing library. The preprocessing function transforms DeepStream's buffers into model-ready tensors.
+
+**Postprocessing:** Your model outputs raw tensors. For YOLO, that's detection grids that need decoding, NMS, and thresholding. For classifiers, it's logits that need softmax and thresholding. The postprocessing function parses these outputs and populates DeepStream's metadata structures.
+
+You specify the library path and function names in the PGIE/SGIE config file:
+
+```ini
+[property]
+parse-bbox-func-name=NvDsInferParseCustomYolo
+custom-lib-path=/opt/nvidia/deepstream/lib/libnvds_infercustomparser.so
+```
+
+The postprocessing function signature looks like this:
 
 ```cpp
-// Simplified example
 extern "C" bool NvDsInferParseCustomYolo(
     std::vector<NvDsInferLayerInfo> const& outputLayers,
     NvDsInferNetworkInfo const& networkInfo,
@@ -285,54 +369,122 @@ extern "C" bool NvDsInferParseCustomYolo(
     std::vector<NvDsInferObjectDetectionInfo>& objectList)
 {
     // Parse YOLO output tensors
-    // Populate objectList with detections
+    // Apply NMS, threshold filtering
+    // Populate objectList with detections:
+    for (auto& det : decoded_detections) {
+        NvDsInferObjectDetectionInfo obj;
+        obj.classId = det.class_id;
+        obj.left = det.x1;
+        obj.top = det.y1;
+        obj.width = det.x2 - det.x1;
+        obj.height = det.y2 - det.y1;
+        obj.detectionConfidence = det.confidence;
+        objectList.push_back(obj);
+    }
     return true;
 }
 ```
+
+DeepStream's `nvinfer` reads `objectList` and creates `NvDsObjectMeta` entries that flow through the rest of the pipeline. Downstream elements (tracker, SGIE, sinks) consume this metadata without knowing it came from a custom model.
+
+```mermaid
+flowchart LR
+    subgraph nvinfer["nvinfer Element"]
+        INPUT[DeepStream Buffer] --> PREPROC[Preprocess .so]
+        PREPROC --> MODEL[TensorRT Engine]
+        MODEL --> POSTPROC[Postprocess .so]
+        POSTPROC --> META[NvDsObjectMeta]
+    end
+    
+    META --> DOWNSTREAM[Tracker / SGIE / Sink]
+    
+    style PREPROC fill:#ff6b6b
+    style POSTPROC fill:#ff6b6b
+    style MODEL fill:#4ecdc4
+```
+
+### Model Export and TensorRT
+
+DeepStream requires models in TensorRT `.engine` format. The conversion pipeline:
+
+1. Export PyTorch model to ONNX
+2. Convert ONNX to TensorRT engine using `trtexec`
+
+We used FP16 precision—half the memory footprint of FP32 with negligible accuracy loss on our tasks. Dynamic batch sizes (1–32) were configured to handle variable camera loads without recompiling engines.
+
+```bash
+trtexec --onnx=yolov8.onnx \
+        --saveEngine=yolov8.engine \
+        --fp16 \
+        --minShapes=images:1x3x640x640 \
+        --optShapes=images:16x3x640x640 \
+        --maxShapes=images:32x3x640x640
+```
+
+More on model export tooling in the [tools post](#blog/tools-of-the-trade).
 
 ---
 
 ## The New Architecture
 
-We separated concerns into control plane and data plane.
+The old system conflated everything: inference, configuration, artifact storage, logging—all tangled together, restarting pods whenever anything changed. We separated concerns into control plane and data plane.
 
-Each pod contains:
-- **DeepStream application:** the inference pipeline
-- **Watcher service:** polls for configuration changes, handles camera add/remove
-- **mcmirror:** forwards artifacts (clips, snapshots) to blob storage
-- **Fluentd:** log aggregation
+**Data plane:** the inference pods. Each handles up to 32 camera streams, runs the DeepStream pipeline, and does one thing well—process video and emit results.
 
-Logs flow from Fluentd to Kafka, then get batched and persisted to the database. The watcher service exposes an API to query which cameras are running on which pods.
+**Control plane:** everything else. Configuration management, camera assignment, artifact routing, log aggregation. Changes here don't require restarting inference.
 
 ```mermaid
 flowchart TB
-    subgraph Pod["Inference Pod"]
-        DS[DeepStream App]
-        WS[Watcher Service]
-        MC[mcmirror]
-        FL[Fluentd]
-    end
-    
-    subgraph External
-        CM[ConfigMap]
+    subgraph ControlPlane["Control Plane"]
+        API[Backend API]
+        CM[ConfigMaps]
         KF[Kafka]
-        DB[(Database)]
-        BLOB[(Blob Store)]
     end
     
-    CM -.-> WS
-    WS --> DS
-    DS --> FL
-    DS --> MC
+    subgraph DataPlane["Data Plane - Inference Pod"]
+        subgraph Pod["Pod Components"]
+            DS[DeepStream App<br/>32 camera streams]
+            WS[Watcher Service]
+            MC[mcmirror]
+            FL[Fluentd]
+        end
+    end
+    
+    subgraph Storage["Storage Layer"]
+        DB[(PostgreSQL<br/>Alerts & Metadata)]
+        BLOB[(Blob Storage<br/>Clips & Snapshots)]
+    end
+    
+    API -->|Update config| CM
+    CM -.->|Poll changes| WS
+    WS -->|Add/remove cameras| DS
+    
+    DS -->|Alerts & logs| FL
+    DS -->|Video clips| MC
+    
     FL --> KF
     KF --> DB
     MC --> BLOB
     
     style DS fill:#4ecdc4
     style WS fill:#45b7d1
+    style ControlPlane fill:#f0f0f0
+    style DataPlane fill:#e8f4e8
 ```
 
-Beyond PPE, we added fire detection, restricted region monitoring, safety shower compliance, and specialized PPE like arc suits.
+Each inference pod contains four components:
+
+**DeepStream Application:** The pipeline itself. Reads RTSP streams, runs PGIE/SGIE inference, outputs annotated video and detection metadata. This is the only component that touches the GPU.
+
+**Watcher Service:** Polls a Kubernetes ConfigMap every few seconds. When configuration changes—new camera added, camera removed, model parameters updated—it orchestrates the hot-swap without restarting the pipeline. Exposes an API for the backend to query pod state: which cameras are running, current GPU utilization, slot availability.
+
+**mcmirror:** Handles artifact persistence. When a violation is detected, the pipeline saves a short video clip and snapshot locally. mcmirror picks these up and forwards them to blob storage asynchronously. Decouples inference latency from storage latency.
+
+**Fluentd:** Log aggregation. Detection events, performance metrics, errors—all flow through Fluentd to Kafka. A separate consumer batches and persists to the database. Inference pods never talk to the database directly.
+
+The separation pays off operationally. Need to add a camera? Update the ConfigMap. Backend notifies the right pod, watcher picks it up, camera starts streaming within seconds. No restarts. Need to update model parameters? Same flow. Need to debug an issue? Logs are centralized, artifacts are in blob storage, pod state is queryable. The inference pipeline stays focused on inference.
+
+Beyond PPE, we added fire detection, restricted region monitoring, safety shower compliance, and specialized PPE like arc suits—each following the same architecture.
 
 ---
 
@@ -344,7 +496,7 @@ Someone goes down. Maybe near heavy machinery. Maybe from a stairwell or elevate
 
 ### The Constraint: Model Size
 
-The goal was a small, low-latency model—efficient enough to scale across many streams without saturating GPU resources. Initial detection could happen locally; alerts would propagate to cloud infrastructure where larger models could provide secondary confirmation.
+The goal was a small, low-latency model—efficient enough to scale across many streams without saturating GPU resources.
 
 We needed to avoid image-based action recognition. Models like SlowFast consume entire video clips and run 3D convolutions over them. I had used SlowFast for a [cricket action recognition project](#blog/cricket-shots-slowfast) with Mumbai Indians, classifying batting strokes. Accurate for that use case, but expensive. And importantly, SlowFast makes sense when you absolutely need visual cues to differentiate between actions.
 
@@ -423,6 +575,10 @@ Current state-of-the-art GCN models for action recognition use multi-stream arch
 EfficientGCN solves this: reduce parameters while maintaining performance.
 
 The original model was trained on NTU RGB+D with 60 action classes, 25 body keypoints per frame, and 3D coordinates from Kinect depth cameras. We adapted it to work with 14 keypoints in 2D from standard RGB cameras.
+
+### Training Data
+
+For fall detection, we used the NTU RGB+D dataset directly—it already includes fall actions as one of its 60 classes.
 
 ### Three Input Branches
 
@@ -503,6 +659,12 @@ flowchart TB
     style BB fill:#45b7d1,color:#fff
     style FUSION fill:#96ceb4
 ```
+
+### Why 64 Frames?
+
+EfficientGCN expects 64-frame sequences as input. At 30 FPS, that's roughly 2.1 seconds of video.
+
+Falls typically complete in 0.5–1.5 seconds. 64 frames captures the full event with context before and after—the stumble, the fall, the impact, the motionless aftermath. We tested 32, 64, and 128 frames. 32 missed slow falls (elderly workers stumbling gradually). 128 added latency without improving accuracy. 64 was what the paper used, and it made sense for our use case.
 
 ### Architecture Details
 
