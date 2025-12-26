@@ -30,9 +30,7 @@ Each PPE check had its own model:
 
 Four separate backbones extracting features from identical pixels, burning four times the compute for no good reason. You could share a single backbone and branch into separate classification heads, cutting redundant computation significantly.
 
-The models themselves were NVIDIA's TAO pretrained models, things like PeopleNet and TrafficCamNet. Convenient for getting started with DeepStream, but consistently underperforming compared to well-tuned open source alternatives like YOLOv8.
-
-We replaced the entire approach with a two-stage pipeline: detect people first, then classify PPE on each person crop. This grounds every detection to a person—you can't have a phantom helmet floating in the air. We fine-tuned YOLOv8 small and nano variants on refinery-specific data.
+The models themselves were NVIDIA's TAO pretrained models, things like PeopleNet and BodyPoseNet. Convenient for getting started with DeepStream, but consistently underperforming compared to well-tuned open source alternatives like YOLOv8.
 
 ### The Architecture Problem
 
@@ -41,7 +39,7 @@ The deployment architecture was worse. Here's how a request flowed:
 1. A request comes from the UI to run a model on a camera
 2. The backend checks a database to see if that camera is already being processed
 3. If not, it looks for an existing Kubernetes pod running fewer than four processes
-4. If it finds one, it **kills that pod** and restarts with a new configuration (JSON generated based on model requirements)
+4. If it finds one, it **kills that pod and starts a new one** based on configuration (JSON generated based on model requirements)
 5. If it doesn't find one, it spawns an entirely new pod using NodeJS K8s APIs
 
 One camera equals one DeepStream process. All processes separate. Nothing shared.
@@ -124,7 +122,7 @@ The pipeline abstraction means you can compose complex applications from simple 
 5. An *SGIE element* runs secondary classification on detected objects
 6. A *sink element* writes results to file or streams them out
 
-The previous team wasn't exploiting any of this. One camera, one process. Ferrari delivering groceries.
+The previous team wasn't exploiting any of this. One camera, one process. Taking four separate Ubers to the same destination.
 
 ---
 
@@ -132,11 +130,13 @@ The previous team wasn't exploiting any of this. One camera, one process. Ferrar
 
 I'd spent college and internships fine-tuning YOLOs and BERTs. The rhythm becomes meditative after enough iterations: data collection, labeling, hyperparameter sweeps, training, evaluation, repeat. Good work, but I'd done enough of it. I left most of the detection model work to colleagues. The DeepStream pipeline architecture and fall detection model were more interesting to me—and that's what this post focuses on. PPE serves as the running example. Fire, smoke, spillage, and the other detection modes followed similar patterns.
 
+PPE detection data was annotated by members of the Jamnagar safety team via a Label Studio pipeline I had set up—human-in-the-loop active learning where model predictions become pre-annotations for correction. More details on the tooling setup in the [tools post](#blog/tools-of-the-trade).
+
 ### Two-Stage PPE Detection
 
-The old system detected PPE items directly in the frame. This caused two problems: small objects (gloves, boots) were hard to detect at typical camera distances, and false positives appeared everywhere—the model would hallucinate helmets on lamp posts or gloves on valve handles.
+Four models doing four times the work was wasteful. The fix was straightforward: share the backbone.
 
-The fix was grounding: every PPE detection must belong to a person.
+The old system also detected PPE items directly in the frame. This caused false positives to appear everywhere—the model would hallucinate helmets on lamp posts or gloves on valve handles. The fix was grounding: every PPE detection must belong to a person.
 
 ```mermaid
 flowchart TB
@@ -193,6 +193,8 @@ The grounding constraint is simple but powerful: no person, no PPE detection. A 
 
 ### Batching
 
+The one-process-per-camera architecture was the core bottleneck. DeepStream was designed for exactly this problem—we just needed to use it properly.
+
 A DeepStream pipeline follows GStreamer's model of elements connected by pads. Each element has source pads (inputs) and sink pads (outputs). Data flows from sink to source through links.
 
 The `nvstreammux` element has multiple source pads (one per input source) and a single sink pad that outputs batched frames. On the other end, `nvstreamdemux` takes batched data and splits it back to individual streams.
@@ -239,7 +241,7 @@ flowchart LR
     style TRACK fill:#96ceb4
 ```
 
-With this architecture, **one pipeline handles eight cameras**. The PGIE element receives a batch of eight frames and runs inference on all of them in a single GPU kernel launch. Memory transfer overhead happens once per batch, not once per frame. The GPU stays saturated. Memory bandwidth is amortized across the batch.
+With this architecture, **one pipeline handles eight cameras**. The PGIE element receives a batch of eight frames and runs inference on all of them in a single forward pass, with kernel operations batched across all frames. The GPU stays saturated.
 
 ### Intelligent Tracking
 
@@ -267,8 +269,8 @@ sequenceDiagram
     T->>S: Detect PPE on crops
     
     F->>T: Frame 2-20
-    T-->>T: Predict positions
-    Note over S: Skip
+    T-->>T: Predict positions (no inference)
+    Note over D,S: PGIE & SGIE skip
     
     F->>D: Frame 21
     D->>T: Fresh detections
@@ -279,13 +281,13 @@ This gave us more than just performance gains. Without tracking, the same person
 
 This persistent identity also enabled smarter alerting. Early versions flagged workers removing helmets momentarily to wipe sweat—technically a violation, but not one worth interrupting the control room for. We added temporal persistence: a violation must persist for 30 seconds before triggering an alert. Simple post-processing rule, dramatic reduction in false positives.
 
-**With tracking enabled, we pushed from 8 to 32 concurrent camera streams per pipeline** while maintaining acceptable latency.
+**With tracking enabled—and both PGIE and SGIE running only every 20th frame—we pushed from 8 to 32 concurrent camera streams per pipeline** while maintaining acceptable latency.
 
 ### Hot-Swapping Cameras
 
-GStreamer pipelines are technically dynamic. You can add and remove elements at runtime. But the plumbing is fiddly. Adding a new source to an already-running pipeline means creating the source element, creating a new source pad on `nvstreammux`, linking them, and setting the element to PLAYING state. All while the rest of the pipeline continues processing. Get the state transitions wrong, you deadlock. Get the pad linking wrong, you leak memory or crash.
+The old system required pod restarts to add cameras. That meant several minutes of downtime for a simple configuration change.
 
-The previous system gave up on this entirely. Adding a camera meant stopping the pod and restarting with a new configuration. That meant several minutes of downtime.
+GStreamer pipelines are technically dynamic. You can add and remove elements at runtime. But the plumbing is fiddly. Adding a new source to an already-running pipeline means creating the source element, creating a new source pad on `nvstreammux`, linking them, and setting the element to PLAYING state. All while the rest of the pipeline continues processing. Get the state transitions wrong, you deadlock. Get the pad linking wrong, you leak memory or crash.
 
 **Pre-allocated Slots**
 
@@ -403,25 +405,7 @@ flowchart LR
     style MODEL fill:#4ecdc4
 ```
 
-### Model Export and TensorRT
-
-DeepStream requires models in TensorRT `.engine` format. The conversion pipeline:
-
-1. Export PyTorch model to ONNX
-2. Convert ONNX to TensorRT engine using `trtexec`
-
-We used FP16 precision—half the memory footprint of FP32 with negligible accuracy loss on our tasks. Dynamic batch sizes (1–32) were configured to handle variable camera loads without recompiling engines.
-
-```bash
-trtexec --onnx=yolov8.onnx \
-        --saveEngine=yolov8.engine \
-        --fp16 \
-        --minShapes=images:1x3x640x640 \
-        --optShapes=images:16x3x640x640 \
-        --maxShapes=images:32x3x640x640
-```
-
-More on model export tooling in the [tools post](#blog/tools-of-the-trade).
+**Model Export:** DeepStream requires models in TensorRT `.engine` format. The conversion pipeline: export PyTorch to ONNX, then convert ONNX to TensorRT using `trtexec`. We used FP16 precision—half the memory footprint of FP32 with negligible accuracy loss. Dynamic batch sizes (1–32) handled variable camera loads without recompiling engines. More on model export tooling in the [tools post](#blog/tools-of-the-trade).
 
 ---
 
@@ -478,21 +462,23 @@ Each inference pod contains four components:
 
 **Watcher Service:** Polls a Kubernetes ConfigMap every few seconds. When configuration changes—new camera added, camera removed, model parameters updated—it orchestrates the hot-swap without restarting the pipeline. Exposes an API for the backend to query pod state: which cameras are running, current GPU utilization, slot availability.
 
-**mcmirror:** Handles artifact persistence. When a violation is detected, the pipeline saves a short video clip and snapshot locally. mcmirror picks these up and forwards them to blob storage asynchronously. Decouples inference latency from storage latency.
+**mcmirror:** A sidecar using MinIO's `mc mirror --watch` to continuously sync local artifact directories to blob storage. When a violation is detected, the pipeline saves a short video clip and snapshot locally. mcmirror picks these up and forwards them to blob storage asynchronously. Decouples inference latency from storage latency.
 
 **Fluentd:** Log aggregation. Detection events, performance metrics, errors—all flow through Fluentd to Kafka. A separate consumer batches and persists to the database. Inference pods never talk to the database directly.
 
 The separation pays off operationally. Need to add a camera? Update the ConfigMap. Backend notifies the right pod, watcher picks it up, camera starts streaming within seconds. No restarts. Need to update model parameters? Same flow. Need to debug an issue? Logs are centralized, artifacts are in blob storage, pod state is queryable. The inference pipeline stays focused on inference.
 
-Beyond PPE, we added fire detection, restricted region monitoring, safety shower compliance, and specialized PPE like arc suits—each following the same architecture.
+Beyond PPE, we added fire detection, restricted region monitoring, safety shower compliance, and specialized PPE like arc suits—each following the same architecture. Most of these additions were variations on the same theme: train a YOLO, plug it in. Fall detection broke the pattern.
+
+The architecture was model-agnostic by design. We'd soon find out how agnostic.
 
 ---
 
 ## The Fall Detection Problem
 
-Fall detection kept coming up in safety team meetings.
+Everything so far was spatial: is this object here? Is this person wearing that? Fall detection is temporal: what just happened to this person's body over the last two seconds?
 
-Someone goes down. Maybe near heavy machinery. Maybe from a stairwell or elevated platform. Every second of response delay matters. Could we build a system that notices?
+Fall detection kept coming up in safety team meetings. Someone goes down. Maybe near heavy machinery. Maybe from a stairwell or elevated platform. Every second of response delay matters. Could we build a system that notices?
 
 ### The Constraint: Model Size
 
@@ -576,6 +562,27 @@ EfficientGCN solves this: reduce parameters while maintaining performance.
 
 The original model was trained on NTU RGB+D with 60 action classes, 25 body keypoints per frame, and 3D coordinates from Kinect depth cameras. We adapted it to work with 14 keypoints in 2D from standard RGB cameras.
 
+### Keypoint Adaptation: 25 → 14
+
+The original NTU RGB+D dataset uses 25 Kinect keypoints including fine-grained hand joints (thumb, fingertips) and multiple spine points. YoloPose, our pose detector, outputs 17 COCO-format keypoints (nose, eyes, ears, shoulders, elbows, wrists, hips, knees, ankles).
+
+We chose a 14-keypoint common subset that maps cleanly between both:
+
+| Our 14 Keypoints | NTU RGB+D (25) | YoloPose/COCO (17) |
+|------------------|----------------|---------------------|
+| Head | Head (4) | Nose (0) |
+| Neck | Neck (3) | Midpoint of shoulders |
+| L/R Shoulder | L/R Shoulder (5, 9) | L/R Shoulder (5, 6) |
+| L/R Elbow | L/R Elbow (6, 10) | L/R Elbow (7, 8) |
+| L/R Wrist | L/R Wrist (7, 11) | L/R Wrist (9, 10) |
+| L/R Hip | L/R Hip (13, 17) | L/R Hip (11, 12) |
+| L/R Knee | L/R Knee (14, 18) | L/R Knee (13, 14) |
+| L/R Ankle | L/R Ankle (15, 19) | L/R Ankle (15, 16) |
+
+**Training:** We took NTU RGB+D's 3D skeleton data, projected it to 2D (discarding the Z coordinate), and extracted only the 14 joints that correspond to our target format. The adjacency matrix was modified accordingly—a 14×14 matrix encoding which joints connect to which.
+
+**Inference:** YoloPose outputs 17 keypoints. We map these to our 14-keypoint format: the neck is computed as the midpoint between left and right shoulders, and we drop the eyes and ears. This mapping happens in the preprocessing stage before feeding data to EfficientGCN.
+
 ### Training Data
 
 For fall detection, we used the NTU RGB+D dataset directly—it already includes fall actions as one of its 60 classes.
@@ -592,7 +599,7 @@ The model processes three input branches, each capturing different aspects of mo
 - First C channels: position at frame i minus position at frame i+1 (slow motion)
 - Last C channels: position at frame i minus position at frame i+2 (fast motion)
 
-Actions have characteristic velocity signatures. A fall involves sudden downward acceleration followed by abrupt deceleration on impact.
+This idea is very similar to slow and fast pathways in SlowFast.
 
 **Bone Branch:**
 - First C channels: joint coordinate minus adjacent joint coordinate (bone length and direction, adjacency predefined)
@@ -660,12 +667,6 @@ flowchart TB
     style FUSION fill:#96ceb4
 ```
 
-### Why 64 Frames?
-
-EfficientGCN expects 64-frame sequences as input. At 30 FPS, that's roughly 2.1 seconds of video.
-
-Falls typically complete in 0.5–1.5 seconds. 64 frames captures the full event with context before and after—the stumble, the fall, the impact, the motionless aftermath. We tested 32, 64, and 128 frames. 32 missed slow falls (elderly workers stumbling gradually). 128 added latency without improving accuracy. 64 was what the paper used, and it made sense for our use case.
-
 ### Architecture Details
 
 Each branch passes through batch normalization, then an initial block (same as ST-GCN: spatial graph convolution followed by temporal convolution) for feature extraction.
@@ -728,19 +729,54 @@ EfficientGCN follows EfficientNet's scaling philosophy. The B0 variant is tiny (
 
 A few points lost to reduced input dimensionality, but the model still worked.
 
----
-
-## Integration
+### Making It Work in DeepStream
 
 DeepStream doesn't support keypoint data structures natively. The framework's metadata is built around bounding boxes and segmentation masks.
 
 Three approaches:
 
-1. **Hacky:** abuse segmentation mask fields, disable display. Quick but problematic long-term.
+1. **Hacky:** DeepStream has native support for segmentation masks—you could repurpose that memory space to store keypoint coordinates instead. Quick but semantically confusing and problematic for maintenance.
 2. **Middle path:** define custom structs in the `.so` file, use `cudaMemcpy` to manage GPU memory. Requires managing memory carefully. *Not fun, but clean.* This is what we did.
 3. **Best but most involved:** fork and modify `nvinfer` itself to support keypoints. Not worth it for our timeline.
 
-### The Full Pipeline
+**Temporal Buffering**
+
+EfficientGCN expects 64 frames of skeleton data as input. But DeepStream processes frames one at a time. We needed a mechanism to accumulate keypoints across frames before running inference.
+
+The solution was a custom C++ struct that persists across frames:
+
+```cpp
+struct SkeletonBuffer {
+    int track_id;                          // Person tracking ID
+    float keypoints[64][14][2];            // 64 frames × 14 joints × (x,y)
+    int frame_count;                       // How many frames accumulated
+    int oldest_frame_idx;                  // Circular buffer index
+    
+    void add_frame(float* new_keypoints) {
+        int idx = (oldest_frame_idx + frame_count) % 64;
+        memcpy(keypoints[idx], new_keypoints, 14 * 2 * sizeof(float));
+        if (frame_count < 64) frame_count++;
+        else oldest_frame_idx = (oldest_frame_idx + 1) % 64;
+    }
+    
+    bool ready() { return frame_count == 64; }
+};
+
+// Map from track_id to buffer
+std::unordered_map<int, SkeletonBuffer> skeleton_buffers;
+```
+
+The preprocessing element maintains one buffer per tracked person. On each frame:
+1. Extract keypoints from YoloPose output
+2. Look up the buffer for this track ID (create if new)
+3. Add the new frame's keypoints to the circular buffer
+4. If buffer has 64 frames, prepare all three input tensors (joint, velocity, bone) and trigger SGIE inference
+
+This accumulation happens in C++ within the custom preprocessing element. The buffers persist across probe callbacks, building up temporal context until there's enough data to run the action recognition model.
+
+---
+
+## The Full Pipeline
 
 ```mermaid
 flowchart TB
@@ -748,7 +784,7 @@ flowchart TB
     DEC --> MUX[nvstreammux]
     MUX --> PGIE[PGIE: YoloPose]
     PGIE --> TRACK[nvtracker]
-    TRACK --> PRE[Preprocess Element]
+    TRACK --> PRE[Preprocess Element<br/>Accumulates keypoints<br/>in SkeletonBuffer]
     PRE --> SGIE[SGIE: EfficientGCN]
     SGIE --> POST[Post Process]
     POST --> ALERT{Fall?}
@@ -762,7 +798,7 @@ flowchart TB
 
 **PGIE (Primary Inference):** YoloPose, a YOLO variant that outputs bounding boxes and body keypoints in a single forward pass. Custom post-processing (C++) extracts both, creates standard metadata for boxes, allocates separate buffers for keypoint data.
 
-**Preprocess Element:** Custom element that accumulates keypoints across frames. EfficientGCN expects 64 frames as input. The element maintains a circular buffer per tracked object and prepares all three input tensors (joint, velocity, bone). Temporal batching and coordinate transformations happen here, all in C++.
+**Preprocess Element:** Custom element that accumulates keypoints across frames in the SkeletonBuffer struct. When 64 frames are ready for a tracked person, it prepares all three input tensors (joint, velocity, bone) and triggers inference. Temporal batching and coordinate transformations happen here, all in C++.
 
 **SGIE (Secondary Inference):** EfficientGCN. Output is a probability distribution over action classes. Post-processing thresholds on the fall class probability.
 
@@ -771,8 +807,6 @@ flowchart TB
 ## Coda
 
 In October 2024, the project won the Gulf Energy Information Excellence Award for Best Health, Safety or Environmental Contribution in the downstream category. "Pioneering AI-driven plant video surveillance project with Jio Platforms and Reliance Industries Limited."
-
-Found out about it the way ICs usually find out about awards: got forwarded a link months after the ceremony.
 
 But that's not really the point.
 
