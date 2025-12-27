@@ -310,51 +310,90 @@
         getMermaidThemeConfig(theme) {
             const configs = {
                 'before-sunrise': {
-                    primaryColor: '#e0f2fe',
-                    primaryTextColor: '#0369a1',
-                    primaryBorderColor: '#0ea5e9',
-                    lineColor: '#0ea5e9',
-                    secondaryColor: '#f0f9ff',
-                    tertiaryColor: '#ffffff',
+                    // Node colors - soft blues
+                    primaryColor: '#dbeafe',
+                    primaryTextColor: '#1e40af',
+                    primaryBorderColor: '#3b82f6',
+                    secondaryColor: '#e0f2fe',
+                    secondaryTextColor: '#0369a1',
+                    secondaryBorderColor: '#0ea5e9',
+                    tertiaryColor: '#f0fdf4',
+                    tertiaryTextColor: '#166534',
+                    tertiaryBorderColor: '#22c55e',
+                    // Lines and edges
+                    lineColor: '#64748b',
+                    // Subgraph/cluster colors - layered blues
+                    clusterBkg: '#eff6ff',
+                    clusterBorder: '#3b82f6',
+                    cluster0Bkg: '#dbeafe',
+                    cluster1Bkg: '#eff6ff',
+                    cluster2Bkg: '#f8fafc',
+                    // General
                     background: '#ffffff',
-                    mainBkg: '#e0f2fe',
-                    nodeBorder: '#0ea5e9',
-                    clusterBkg: '#f0f9ff',
-                    clusterBorder: '#0ea5e9',
-                    titleColor: '#0369a1',
+                    mainBkg: '#dbeafe',
+                    nodeBorder: '#3b82f6',
+                    nodeTextColor: '#1e40af',
+                    titleColor: '#0f172a',
                     edgeLabelBackground: '#ffffff',
+                    textColor: '#334155',
                     fontFamily: 'Inter, system-ui, sans-serif'
                 },
                 'before-sunset': {
-                    primaryColor: '#ffedd5',
-                    primaryTextColor: '#9a3412',
-                    primaryBorderColor: '#f97316',
-                    lineColor: '#f97316',
-                    secondaryColor: '#fff7ed',
-                    tertiaryColor: '#ffffff',
-                    background: '#ffffff',
-                    mainBkg: '#ffedd5',
-                    nodeBorder: '#f97316',
+                    // Node colors - warm oranges and ambers
+                    primaryColor: '#fef3c7',
+                    primaryTextColor: '#92400e',
+                    primaryBorderColor: '#f59e0b',
+                    secondaryColor: '#ffedd5',
+                    secondaryTextColor: '#9a3412',
+                    secondaryBorderColor: '#f97316',
+                    tertiaryColor: '#fce7f3',
+                    tertiaryTextColor: '#9d174d',
+                    tertiaryBorderColor: '#ec4899',
+                    // Lines and edges
+                    lineColor: '#78716c',
+                    // Subgraph/cluster colors - warm oranges
                     clusterBkg: '#fff7ed',
                     clusterBorder: '#f97316',
-                    titleColor: '#9a3412',
-                    edgeLabelBackground: '#ffffff',
+                    cluster0Bkg: '#ffedd5',
+                    cluster1Bkg: '#fff7ed',
+                    cluster2Bkg: '#fffbf5',
+                    // General
+                    background: '#fffbf5',
+                    mainBkg: '#fef3c7',
+                    nodeBorder: '#f59e0b',
+                    nodeTextColor: '#92400e',
+                    titleColor: '#44403c',
+                    edgeLabelBackground: '#fffbf5',
+                    textColor: '#57534e',
                     fontFamily: 'Inter, system-ui, sans-serif'
                 },
                 'before-midnight': {
+                    // Node colors - deep blues with light text
                     primaryColor: '#1e3a5f',
-                    primaryTextColor: '#e0e7ff',
-                    primaryBorderColor: '#4fc3f7',
-                    lineColor: '#4fc3f7',
-                    secondaryColor: '#1a2639',
-                    tertiaryColor: '#0d1b2a',
-                    background: '#1a2639',
-                    mainBkg: '#1e3a5f',
-                    nodeBorder: '#4fc3f7',
-                    clusterBkg: '#1a2639',
+                    primaryTextColor: '#e0f2fe',
+                    primaryBorderColor: '#38bdf8',
+                    secondaryColor: '#164e63',
+                    secondaryTextColor: '#cffafe',
+                    secondaryBorderColor: '#22d3d1',
+                    tertiaryColor: '#312e81',
+                    tertiaryTextColor: '#e0e7ff',
+                    tertiaryBorderColor: '#818cf8',
+                    // Lines and edges
+                    lineColor: '#94a3b8',
+                    // Subgraph/cluster colors - ALL DARK backgrounds
+                    clusterBkg: '#0d1b2a',
                     clusterBorder: '#4fc3f7',
-                    titleColor: '#ffd54f',
-                    edgeLabelBackground: '#1a2639',
+                    cluster0Bkg: '#162d4d',
+                    cluster1Bkg: '#0f2744',
+                    cluster2Bkg: '#0d1b2a',
+                    // General
+                    background: '#0d1b2a',
+                    mainBkg: '#1e3a5f',
+                    nodeBorder: '#38bdf8',
+                    nodeTextColor: '#e0f2fe',
+                    titleColor: '#fcd34d',
+                    edgeLabelBackground: '#1e3a5f',
+                    textColor: '#e0f2fe',
                     fontFamily: 'Inter, system-ui, sans-serif'
                 }
             };
@@ -372,23 +411,59 @@
                 const container = document.createElement('div');
                 container.className = 'mermaid-diagram';
                 container.id = `mermaid-diagram-${index}`;
+                container.dataset.mermaidSource = code;  // Store original code for theme switching
                 
                 // Replace the pre/code with the mermaid container
                 pre.parentNode.replaceChild(container, pre);
                 
                 // Render the diagram
-                try {
-                    mermaid.render(`mermaid-svg-${index}`, code).then(result => {
-                        container.innerHTML = result.svg;
-                    }).catch(err => {
-                        console.error('Mermaid render error:', err);
-                        container.innerHTML = `<pre class="mermaid-error"><code>${code}</code></pre>`;
-                    });
-                } catch (err) {
-                    console.error('Mermaid error:', err);
-                    container.innerHTML = `<pre class="mermaid-error"><code>${code}</code></pre>`;
-                }
+                this.renderSingleDiagram(container, code, index);
             });
+        },
+        
+        renderSingleDiagram(container, code, index) {
+            try {
+                mermaid.render(`mermaid-svg-${index}-${Date.now()}`, code).then(result => {
+                    container.innerHTML = result.svg;
+                }).catch(err => {
+                    console.error('Mermaid render error:', err);
+                    container.innerHTML = `<pre class="mermaid-error"><code>${code}</code></pre>`;
+                });
+            } catch (err) {
+                console.error('Mermaid error:', err);
+                container.innerHTML = `<pre class="mermaid-error"><code>${code}</code></pre>`;
+            }
+        },
+        
+        updateMermaidTheme() {
+            const diagrams = document.querySelectorAll('.mermaid-diagram');
+            if (diagrams.length === 0) return;
+            
+            const currentTheme = document.body.className.split(' ')[0] || 'before-sunrise';
+            const themeConfig = this.getMermaidThemeConfig(currentTheme);
+            
+            if (typeof mermaid !== 'undefined') {
+                mermaid.initialize({ 
+                    startOnLoad: false,
+                    theme: 'base',
+                    themeVariables: themeConfig,
+                    flowchart: {
+                        useMaxWidth: true,
+                        htmlLabels: true,
+                        curve: 'basis'
+                    },
+                    sequence: {
+                        useMaxWidth: true
+                    }
+                });
+                
+                diagrams.forEach((container, index) => {
+                    const code = container.dataset.mermaidSource;
+                    if (code) {
+                        this.renderSingleDiagram(container, code, index);
+                    }
+                });
+            }
         },
         
         showAllBlog(category) {
@@ -631,6 +706,9 @@
         cleanDynamicElements();
         generateDynamicElements(themeName);
         updateQuoteForTheme(themeName);
+        
+        // Update Mermaid diagrams for new theme
+        Router.updateMermaidTheme();
 
         // Update active button state and trigger icon
         elements.themeOptions.forEach(opt => {
@@ -1451,12 +1529,6 @@
             text-align: left;
         }
         
-        /* First paragraph after heading - no indent, slight emphasis */
-        .blog-content h2 + p,
-        .blog-content h3 + p {
-            font-size: 1.25rem;
-        }
-        
         /* === EMPHASIS STYLES === */
         
         .blog-content strong {
@@ -1764,14 +1836,51 @@
             border-color: #e0f2fe;
         }
         
+        /* Sunrise theme - subgraph/cluster overrides */
+        .before-sunrise .mermaid-diagram .cluster rect {
+            fill: #dbeafe !important;
+            stroke: #3b82f6 !important;
+        }
+        .before-sunrise .mermaid-diagram .cluster-label .nodeLabel {
+            color: #1e40af !important;
+        }
+        
         .before-sunset .mermaid-diagram {
             background: linear-gradient(135deg, #fffbf5 0%, #fff7ed 100%);
             border-color: #fed7aa;
         }
         
+        /* Sunset theme - subgraph/cluster overrides */
+        .before-sunset .mermaid-diagram .cluster rect {
+            fill: #ffedd5 !important;
+            stroke: #f97316 !important;
+        }
+        .before-sunset .mermaid-diagram .cluster-label .nodeLabel {
+            color: #9a3412 !important;
+        }
+        
         .before-midnight .mermaid-diagram {
             background: linear-gradient(135deg, #1e3a5f 0%, #0d1b2a 100%);
             border-color: #2d4a6f;
+        }
+        
+        /* Midnight theme - subgraph/cluster overrides - DARK backgrounds */
+        .before-midnight .mermaid-diagram .cluster rect {
+            fill: #162d4d !important;
+            stroke: #4fc3f7 !important;
+        }
+        .before-midnight .mermaid-diagram .cluster-label .nodeLabel {
+            color: #fcd34d !important;
+        }
+        .before-midnight .mermaid-diagram .nodeLabel {
+            color: #e0f2fe !important;
+        }
+        .before-midnight .mermaid-diagram .edgeLabel {
+            background-color: #1e3a5f !important;
+            color: #e0f2fe !important;
+        }
+        .before-midnight .mermaid-diagram .label {
+            color: #e0f2fe !important;
         }
         
         .mermaid-error {

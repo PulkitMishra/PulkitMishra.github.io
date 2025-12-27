@@ -26,21 +26,27 @@ class DevServer {
     
     // Serve static files with proper MIME types
     this.app.use('/assets', express.static('dist/assets', {
-      maxAge: '1d',
-      etag: true,
-      setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.css')) {
-          res.setHeader('Content-Type', 'text/css');
-        } else if (filePath.endsWith('.js')) {
-          res.setHeader('Content-Type', 'application/javascript');
-        }
-      }
-    }));
-    
-    this.app.use(express.static('dist', {
-      maxAge: '1h',
-      etag: true
-    }));
+  maxAge: 0,
+  etag: false,
+  lastModified: false,
+  setHeaders: (res, filePath) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    if (filePath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (filePath.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+}));
+
+this.app.use(express.static('dist', {
+  maxAge: 0,
+  etag: false,
+  lastModified: false,
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  }
+}));
   }
 
   setupRoutes() {
@@ -82,6 +88,7 @@ class DevServer {
   }
 
   async rebuild() {
+  	process.env.NODE_ENV = 'development';
     if (this.isBuilding) {
       console.log(chalk.yellow('Build already in progress, skipping...'));
       return;

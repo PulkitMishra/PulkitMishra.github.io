@@ -156,8 +156,10 @@ class ProductionBuilder {
   }
 
   generateServiceWorker() {
-    return `
-const CACHE_NAME = 'pulkit-portfolio-v1';
+  const buildTimestamp = Date.now();
+  
+  return `
+const CACHE_NAME = 'pulkit-portfolio-v${buildTimestamp}';
 const urlsToCache = [
   '/',
   '/assets/css/styles.min.css',
@@ -166,18 +168,53 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames
+          .filter(name => name.startsWith('pulkit-portfolio-') && name !== CACHE_NAME)
+          .map(name => caches.delete(name))
+      );
+    }).then(() => self.clients.claim())
   );
 });
-    `.trim();
+
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  
+  if (event.request.mode === 'navigate' || url.pathname === '/') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
   }
+  
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      const fetchPromise = fetch(event.request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      });
+      return cached || fetchPromise;
+    })
+  );
+});
+  `.trim();
+}
 
   async copyAssets() {
     console.log(chalk.blue('Copying assets...'));
@@ -379,14 +416,24 @@ self.addEventListener('fetch', event => {
         </div>
     </footer>
 
-    <script src="/assets/js/scripts.min.js"></script>
-    {{#if register_sw}}
-    <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
-    }
-    </script>
-    {{/if}}
+<script src="/assets/js/scripts.min.js"></script>
+{{#if register_sw}}
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(registration => {
+    registration.update();
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated') {
+          window.location.reload();
+        }
+      });
+    });
+  });
+}
+</script>
+{{/if}}
 </body>
 </html>`;
   }
@@ -488,7 +535,7 @@ self.addEventListener('fetch', event => {
         description: this.config.site.description,
         theme_class: 'before-sunrise',
         content: homeContent,
-        register_sw: true,
+        register_sw: process.env.NODE_ENV === 'production',
         site_data_json: this.generateSiteDataJSON()
       };
 
